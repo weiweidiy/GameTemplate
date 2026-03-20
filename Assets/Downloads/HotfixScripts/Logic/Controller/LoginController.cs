@@ -40,7 +40,8 @@ namespace Game
 
             try
             {
-                var enterGame = await httpRequest.HttpRequestAsync<ReqEnterGame, ResEnterGame>(urlEnter, reqEnter);
+                var netholdingView = context.Facade.GetViewControllerContainer().GetViewController("UIPanelNetworkHoldingView") as UIPanelNetworkHoldingView;
+                var enterGame = await httpRequest.HttpRequestAsync<ReqEnterGame, ResEnterGame>(urlEnter, reqEnter ,null, netholdingView);
                 Debug.Log($"进入游戏成功，SocketUrl={enterGame.PlayerDTO.Username}");
                 var model = context.Facade.GetModelManager().GetModel<PlayerModel>();
                 model.Initialize(new List<PlayerDTO>() { enterGame.PlayerDTO });

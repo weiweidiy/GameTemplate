@@ -11,14 +11,14 @@ namespace Game.Demo
         {
             await base.OnEnter(arg);
 
-            await OpenBackground();
-            await OpenStartBattleMenu();
+            //await OpenBackground();
+            //await OpenStartBattleMenu();
         }
 
         public override UniTask OnExit()
         {
-            CloseBackground();
-            CloseStartBattleMenu();
+            //CloseBackground();
+            //CloseStartBattleMenu();
 
             return base.OnExit();
         }
