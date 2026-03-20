@@ -25,13 +25,18 @@ namespace Game
             var socketUrl = parameters[4] as string;
 
             Debug.Log($"开始登录，URL={url}，Uid={req.Uid}");
+            var netholdingView = context.Facade.GetViewControllerContainer().GetViewController(nameof(UIPanelNetworkHoldingView)) as UIPanelNetworkHoldingView;
             try
             {
-                loginTask = await httpRequest.HttpRequestAsync<AccountDTO, AccountDTO>(url, req);
+                
+                loginTask = await httpRequest.HttpRequestAsync<AccountDTO, AccountDTO>(url, req, null,netholdingView);
             }
             catch (Exception e)
             {
+                var view = context.Facade.GetViewControllerContainer().GetViewController(nameof(UIPanelWarningMessageView)) as UIPanelWarningMessageView;
+                view.Open(new UIPanelWarningMessageViewData() { prefabName = nameof(UIPanelWarningMessage),  message = $"登录失败，错误信息：{e.Message}" });
                 Debug.LogError($"登录失败，错误信息：{e.Message}");
+                (netholdingView as IRunable).Stop();
                 throw;
 
             }
@@ -40,7 +45,7 @@ namespace Game
 
             try
             {
-                var netholdingView = context.Facade.GetViewControllerContainer().GetViewController("UIPanelNetworkHoldingView") as UIPanelNetworkHoldingView;
+                //var netholdingView = context.Facade.GetViewControllerContainer().GetViewController(nameof(UIPanelNetworkHoldingView)) as UIPanelNetworkHoldingView;
                 var enterGame = await httpRequest.HttpRequestAsync<ReqEnterGame, ResEnterGame>(urlEnter, reqEnter ,null, netholdingView);
                 Debug.Log($"进入游戏成功，SocketUrl={enterGame.PlayerDTO.Username}");
                 var model = context.Facade.GetModelManager().GetModel<PlayerModel>();
@@ -49,6 +54,7 @@ namespace Game
             catch(Exception e)
             {
                 Debug.LogError($"进入游戏失败，错误信息：{e.Message}");
+                netholdingView.Stop();
                 throw;
             }
 
