@@ -37,11 +37,6 @@ namespace JFramework
         public async Task<byte[]> LoadBytesAsync(string location)
         {
             var text = await LoadAssetAsync<TextAsset>(location);
-            if(text == null)
-            {
-                Debug.LogError($"Failed to load bytes from location: {location}");
-                return null;
-            }
             return text.bytes;
         }
 

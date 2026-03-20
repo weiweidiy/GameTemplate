@@ -2,6 +2,7 @@
 using JFramework;
 using JFramework.Unity;
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -40,6 +41,9 @@ namespace Game
             try
             {
                 var enterGame = await httpRequest.HttpRequestAsync<ReqEnterGame, ResEnterGame>(urlEnter, reqEnter);
+                Debug.Log($"进入游戏成功，SocketUrl={enterGame.PlayerDTO.Username}");
+                var model = context.Facade.GetModelManager().GetModel<PlayerModel>();
+                model.Initialize(new List<PlayerDTO>() { enterGame.PlayerDTO });
             }
             catch(Exception e)
             {
@@ -59,6 +63,7 @@ namespace Game
                 throw;
             }
 
+            
 
             var transition = await context.Facade.TransitonOut(TransitionType.SMFadeTransition.ToString());
             await context.Facade.GetSceneStateMachine().SwitchToState(DemoSceneType.SceneCastle.ToString(), context).AsTask();

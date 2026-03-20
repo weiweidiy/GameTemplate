@@ -41,6 +41,8 @@
     <type fullname="DG.Tweening.UpdateType" preserve="all" />
   </assembly>
   <assembly fullname="JFramework">
+    <type fullname="JFramework.DictionaryContainer`1" preserve="all" />
+    <type fullname="JFramework.EventManager" preserve="all" />
     <type fullname="JFramework.Game.BaseConfigTable`1" preserve="all" />
     <type fullname="JFramework.Game.IConfigLoader" preserve="all" />
     <type fullname="JFramework.Game.IJConfigManager" preserve="all" />
@@ -56,6 +58,7 @@
     <type fullname="JFramework.ITypeRegister" preserve="all" />
     <type fullname="JFramework.IUnique" preserve="all" />
     <type fullname="JFramework.JBaseSocket" preserve="all" />
+    <type fullname="JFramework.JDataConverter" preserve="all" />
     <type fullname="JFramework.JNetMessage" preserve="all" />
     <type fullname="JFramework.SocketStatusCodes" preserve="all" />
   </assembly>
@@ -71,7 +74,6 @@
     <type fullname="JFramework.Unity.BaseStateAsync" preserve="all" />
     <type fullname="JFramework.Unity.BaseViewManager" preserve="all" />
     <type fullname="JFramework.Unity.Controller" preserve="all" />
-    <type fullname="JFramework.Unity.DefaultDataConverter" preserve="all" />
     <type fullname="JFramework.Unity.FacadeBuilder" preserve="all" />
     <type fullname="JFramework.Unity.GameContext" preserve="all" />
     <type fullname="JFramework.Unity.IAssetsLoader" preserve="all" />
@@ -86,6 +88,7 @@
     <type fullname="JFramework.Unity.ISpriteManager" preserve="all" />
     <type fullname="JFramework.Unity.IViewManager" preserve="all" />
     <type fullname="JFramework.Unity.JFacade" preserve="all" />
+    <type fullname="JFramework.Unity.Model`1" preserve="all" />
     <type fullname="JFramework.Unity.SceneMode" preserve="all" />
     <type fullname="JFramework.Unity.TransitionType" preserve="all" />
     <type fullname="JFramework.Unity.UIPanelBase`1" preserve="all" />
@@ -112,8 +115,12 @@
     <type fullname="Microsoft.AspNetCore.SignalR.Client.HubConnectionState" preserve="all" />
     <type fullname="Microsoft.AspNetCore.SignalR.Client.IHubConnectionBuilder" preserve="all" />
   </assembly>
+  <assembly fullname="TDRoom">
+    <type fullname="GlobalBoard" preserve="all" />
+  </assembly>
   <assembly fullname="UniTask">
     <type fullname="Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder" preserve="all" />
+    <type fullname="Cysharp.Threading.Tasks.CompilerServices.AsyncUniTaskMethodBuilder`1" preserve="all" />
     <type fullname="Cysharp.Threading.Tasks.EnumeratorAsyncExtensions" preserve="all" />
     <type fullname="Cysharp.Threading.Tasks.PlayerLoopTiming" preserve="all" />
     <type fullname="Cysharp.Threading.Tasks.UniTask" preserve="all" />
@@ -121,6 +128,8 @@
     <type fullname="Cysharp.Threading.Tasks.UniTaskExtensions" preserve="all" />
     <type fullname="Cysharp.Threading.Tasks.UniTask`1" preserve="all" />
     <type fullname="Cysharp.Threading.Tasks.UniTask`1/Awaiter" preserve="all" />
+    <type fullname="Cysharp.Threading.Tasks.YieldAwaitable" preserve="all" />
+    <type fullname="Cysharp.Threading.Tasks.YieldAwaitable/Awaiter" preserve="all" />
   </assembly>
   <assembly fullname="Unity.TextMeshPro">
     <type fullname="TMPro.TMP_InputField" preserve="all" />
@@ -133,6 +142,7 @@
   </assembly>
   <assembly fullname="UnityEngine.CoreModule">
     <type fullname="UnityEngine.AddComponentMenu" preserve="all" />
+    <type fullname="UnityEngine.AsyncOperation" preserve="all" />
     <type fullname="UnityEngine.Camera" preserve="all" />
     <type fullname="UnityEngine.Color" preserve="all" />
     <type fullname="UnityEngine.Component" preserve="all" />
@@ -150,7 +160,6 @@
     <type fullname="UnityEngine.HideInInspector" preserve="all" />
     <type fullname="UnityEngine.Material" preserve="all" />
     <type fullname="UnityEngine.Mathf" preserve="all" />
-    <type fullname="UnityEngine.Matrix4x4" preserve="all" />
     <type fullname="UnityEngine.MonoBehaviour" preserve="all" />
     <type fullname="UnityEngine.Object" preserve="all" />
     <type fullname="UnityEngine.Quaternion" preserve="all" />
@@ -161,10 +170,11 @@
     <type fullname="UnityEngine.Renderer" preserve="all" />
     <type fullname="UnityEngine.RequireComponent" preserve="all" />
     <type fullname="UnityEngine.Resources" preserve="all" />
+    <type fullname="UnityEngine.RuntimeInitializeOnLoadMethodAttribute" preserve="all" />
     <type fullname="UnityEngine.SceneManagement.LoadSceneMode" preserve="all" />
     <type fullname="UnityEngine.SceneManagement.LocalPhysicsMode" preserve="all" />
     <type fullname="UnityEngine.SceneManagement.Scene" preserve="all" />
-    <type fullname="UnityEngine.Screen" preserve="all" />
+    <type fullname="UnityEngine.SceneManagement.SceneManager" preserve="all" />
     <type fullname="UnityEngine.Scripting.PreserveAttribute" preserve="all" />
     <type fullname="UnityEngine.SerializeField" preserve="all" />
     <type fullname="UnityEngine.Shader" preserve="all" />
@@ -180,8 +190,6 @@
   </assembly>
   <assembly fullname="UnityEngine.IMGUIModule">
     <type fullname="UnityEngine.GUI" preserve="all" />
-    <type fullname="UnityEngine.GUILayout" preserve="all" />
-    <type fullname="UnityEngine.GUILayoutOption" preserve="all" />
   </assembly>
   <assembly fullname="UnityEngine.Physics2DModule">
     <type fullname="UnityEngine.Rigidbody2D" preserve="all" />
@@ -219,16 +227,6 @@
   <assembly fullname="UnityEngine.UIModule">
     <type fullname="UnityEngine.CanvasGroup" preserve="all" />
     <type fullname="UnityEngine.RectTransformUtility" preserve="all" />
-  </assembly>
-  <assembly fullname="UnityWebSocket.Runtime">
-    <type fullname="UnityWebSocket.CloseEventArgs" preserve="all" />
-    <type fullname="UnityWebSocket.CloseStatusCode" preserve="all" />
-    <type fullname="UnityWebSocket.ErrorEventArgs" preserve="all" />
-    <type fullname="UnityWebSocket.IWebSocket" preserve="all" />
-    <type fullname="UnityWebSocket.MessageEventArgs" preserve="all" />
-    <type fullname="UnityWebSocket.OpenEventArgs" preserve="all" />
-    <type fullname="UnityWebSocket.WebSocket" preserve="all" />
-    <type fullname="UnityWebSocket.WebSocketState" preserve="all" />
   </assembly>
   <assembly fullname="YooAsset">
     <type fullname="YooAsset.AssetHandle" preserve="all" />
@@ -277,7 +275,6 @@
     <type fullname="System.Environment" preserve="all" />
     <type fullname="System.EventArgs" preserve="all" />
     <type fullname="System.EventHandler" preserve="all" />
-    <type fullname="System.EventHandler`1" preserve="all" />
     <type fullname="System.Exception" preserve="all" />
     <type fullname="System.Func`1" preserve="all" />
     <type fullname="System.Func`2" preserve="all" />
@@ -328,7 +325,6 @@
     <type fullname="System.Runtime.CompilerServices.YieldAwaitable/YieldAwaiter" preserve="all" />
     <type fullname="System.RuntimeFieldHandle" preserve="all" />
     <type fullname="System.RuntimeTypeHandle" preserve="all" />
-    <type fullname="System.Single" preserve="all" />
     <type fullname="System.String" preserve="all" />
     <type fullname="System.Text.Encoding" preserve="all" />
     <type fullname="System.Threading.CancellationToken" preserve="all" />

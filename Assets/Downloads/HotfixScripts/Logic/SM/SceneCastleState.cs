@@ -86,8 +86,8 @@ namespace Game.Demo
         private async void Ctrl_onStartFightClicked()
         {
             var url = GameLauncher.ServerUrl + "api/Match/Match";
-            //var req = new ReqMatch() { };
-            //await context.Facade.GetControllerManager().GetController(nameof(MatchFightController)).Do(context, url, req);
+            var req = new ReqMatch() { };
+            await context.Facade.GetControllerManager().GetController(nameof(MatchFightController)).Do(context, url, req);
         }
     }
 }
