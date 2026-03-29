@@ -29,6 +29,7 @@ namespace Game
                                 options.AccessTokenProvider = () => Task.FromResult(token);
                             })
                             .WithAutomaticReconnect()
+                            //.AddMessagePackProtocol()
                             .Build();
 
             // 假设服务器端有 "ReceiveBinary" 方法用于接收二进制数据
@@ -109,6 +110,7 @@ namespace Game
             try
             {
                 // 假设服务器端有 "SendBinary" 方法用于接收二进制数据
+                //await connection.InvokeAsync("Ping");
                 await connection.InvokeAsync("SendBinary", data);
             }
             catch (Exception ex)

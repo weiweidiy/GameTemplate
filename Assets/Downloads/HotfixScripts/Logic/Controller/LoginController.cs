@@ -70,7 +70,7 @@ namespace Game
                 throw;
             }
 
-            
+
 
             var transition = await context.Facade.TransitonOut(TransitionType.SMFadeTransition.ToString());
             await context.Facade.GetSceneStateMachine().SwitchToState(DemoSceneType.SceneCastle.ToString(), context).AsTask();

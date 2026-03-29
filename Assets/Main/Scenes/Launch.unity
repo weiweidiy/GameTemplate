@@ -169,7 +169,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 035920f3eaf3bf5458d1101189931b7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayMode: 3
+  PlayMode: 0
   HotfixUrl: https://tiktokgame-1253567538.cos.ap-shanghai.myqcloud.com
   PackageName: DefaultPackage
   _account: 

@@ -58,7 +58,7 @@ mergeInto(LibraryManager.library, {
             }
         });
 
-        // 连接成功回调
+        // 连接成功回调 
         connection.start()
             .then(function () {
                 console.log("SignalR connected");
@@ -87,11 +87,6 @@ mergeInto(LibraryManager.library, {
             if (onDisconnected) {
 
                 dynCall_vi(onDisconnected, error ? error.toString() : "normal close");
-
-                //window.Module.mono_bind_static_method(
-                    //"SignalRBridge.HandleDisconnected",
-                    //error ? error.toString() : "normal close"
-                //);
             }
             // 若需自动重连，可在此处调用 connection.start()，但注意避免死循环
         });
@@ -118,11 +113,15 @@ mergeInto(LibraryManager.library, {
 
     SignalR_InvokeBinary: function (methodName, dataPtr, dataLen) {
         var methodNameStr = UTF8ToString(methodName);
+        console.log("InvokeBinary method:", methodNameStr, "dataPtr:", dataPtr, "dataLen:", dataLen);
         if (!window.signalRConnection) {
             console.error("SignalR not initialized");
             return;
         }
         var byteArray = new Uint8Array(HEAPU8.buffer, dataPtr, dataLen);
+
+        console.log("window.signalRConnection :" + window.signalRConnection);
+        console.log("Byte array to send:", byteArray);  
         window.signalRConnection.invoke(methodNameStr, byteArray.buffer)
             .catch(function (err) {
                 console.error("Binary invoke failed: " + err);
