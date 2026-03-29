@@ -1,9 +1,11 @@
 using Cysharp.Threading.Tasks;
+using Game.Main;
 using JFramework;
 using System;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
-namespace Game.Main
+namespace Game
 {
     public class SignalRForWX : IJSocket
     {
@@ -93,6 +95,7 @@ namespace Game.Main
 
         private void OnBinaryReceived(byte[] data)
         {
+            UnityEngine.Debug.Log($"unity: Received binary data: {data.Length} bytes");
             onBinary?.Invoke(this, data);
         }
     }

@@ -43,20 +43,17 @@ mergeInto(LibraryManager.library, {
 
         // 可选：接收二进制消息（如果服务端发送二进制）
         connection.on("ReceiveBinary", function (data) {
-            console.log("Received binary message of length~~~: " );
-            console.log("Received binary message of length: " + data.byteLength);
-            if (data instanceof ArrayBuffer) {
+            console.log("data constructor:", data.constructor.name);
+            console.log("Is ArrayBuffer?", data instanceof ArrayBuffer);
+            console.log("Is TypedArray?", ArrayBuffer.isView(data));
+
+            // 兼容 ArrayBuffer 和 TypedArray
+            if (data && (data instanceof ArrayBuffer || ArrayBuffer.isView(data))) {
                 var bytes = new Uint8Array(data);
                 var ptr = Module._malloc(bytes.length);
                 HEAPU8.set(bytes, ptr);
-
                 dynCall_vii(onBinaryMessage, ptr, bytes.length);
-
-                //window.Module.mono_bind_static_method(
-                    //"SignalRBridge.HandleBinaryMessage",
-                   // ptr,
-                    //bytes.length
-                //);
+                // 注意：C# 中收到后需调用 SignalR_Free(ptr) 释放
                 // 注意：C# 中收到后需调用 SignalR_Free(ptr) 释放
             }
         });

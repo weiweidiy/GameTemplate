@@ -663,8 +663,11 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// System.ValueTuple<byte,UnityEngine.SceneManagement.Scene>
 	// System.ValueTuple<byte,object>
 	// UnityEngine.Events.InvokableCall<UnityEngine.Vector2>
+	// UnityEngine.Events.InvokableCall<object>
 	// UnityEngine.Events.UnityAction<UnityEngine.Vector2>
+	// UnityEngine.Events.UnityAction<object>
 	// UnityEngine.Events.UnityEvent<UnityEngine.Vector2>
+	// UnityEngine.Events.UnityEvent<object>
 	// deVoid.UIFramework.APanelController<object>
 	// deVoid.UIFramework.AUIScreenController<object>
 	// }}
@@ -743,6 +746,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// System.Void System.Runtime.CompilerServices.AsyncTaskMethodBuilder<object>.Start<JFramework.YooAssetsLoader.<InstantiateAsync>d__1>(JFramework.YooAssetsLoader.<InstantiateAsync>d__1&)
 		// System.Void System.Runtime.CompilerServices.AsyncTaskMethodBuilder<object>.Start<JFramework.YooAssetsLoader.<LoadAssetAsync>d__2<object>>(JFramework.YooAssetsLoader.<LoadAssetAsync>d__2<object>&)
 		// System.Void System.Runtime.CompilerServices.AsyncTaskMethodBuilder<object>.Start<JFramework.YooAssetsLoader.<LoadBytesAsync>d__3>(JFramework.YooAssetsLoader.<LoadBytesAsync>d__3&)
+		// System.Void System.Runtime.CompilerServices.AsyncVoidMethodBuilder.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,Game.Demo.SceneCastleState.<Ctrl_onStartFightClicked>d__9>(System.Runtime.CompilerServices.TaskAwaiter&,Game.Demo.SceneCastleState.<Ctrl_onStartFightClicked>d__9&)
 		// System.Void System.Runtime.CompilerServices.AsyncVoidMethodBuilder.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,Game.GameContainerMain.<Init>d__6>(System.Runtime.CompilerServices.TaskAwaiter&,Game.GameContainerMain.<Init>d__6&)
 		// System.Void System.Runtime.CompilerServices.AsyncVoidMethodBuilder.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,Game.SceneLoginState.<OnLoginClicked>d__9>(System.Runtime.CompilerServices.TaskAwaiter&,Game.SceneLoginState.<OnLoginClicked>d__9&)
 		// System.Void System.Runtime.CompilerServices.AsyncVoidMethodBuilder.AwaitUnsafeOnCompleted<System.Runtime.CompilerServices.TaskAwaiter,Game.SignalRSocket.<Close>d__8>(System.Runtime.CompilerServices.TaskAwaiter&,Game.SignalRSocket.<Close>d__8&)

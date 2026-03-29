@@ -71,7 +71,8 @@
     <type fullname="deVoid.UIFramework.PanelProperties" preserve="all" />
   </assembly>
   <assembly fullname="Main">
-    <type fullname="Game.Main.SignalRForWX" preserve="all" />
+    <type fullname="Game.Main.ConnectionState" preserve="all" />
+    <type fullname="Game.Main.SignalRBridge" preserve="all" />
     <type fullname="GameLauncher" preserve="all" />
   </assembly>
   <assembly fullname="Microsoft.AspNetCore.Http.Connections.Client">
@@ -217,6 +218,7 @@
     <type fullname="System.Collections.IEnumerator" preserve="all" />
     <type fullname="System.ComponentModel.EditorBrowsableAttribute" preserve="all" />
     <type fullname="System.ComponentModel.EditorBrowsableState" preserve="all" />
+    <type fullname="System.DateTime" preserve="all" />
     <type fullname="System.Delegate" preserve="all" />
     <type fullname="System.Diagnostics.DebuggableAttribute" preserve="all" />
     <type fullname="System.Diagnostics.DebuggableAttribute/DebuggingModes" preserve="all" />
@@ -230,10 +232,12 @@
     <type fullname="System.Func`2" preserve="all" />
     <type fullname="System.Guid" preserve="all" />
     <type fullname="System.IAsyncResult" preserve="all" />
+    <type fullname="System.ICloneable" preserve="all" />
     <type fullname="System.IDisposable" preserve="all" />
     <type fullname="System.IObservable`1" preserve="all" />
     <type fullname="System.IObserver`1" preserve="all" />
     <type fullname="System.Int32" preserve="all" />
+    <type fullname="System.InvalidOperationException" preserve="all" />
     <type fullname="System.Linq.Enumerable" preserve="all" />
     <type fullname="System.Linq.IOrderedEnumerable`1" preserve="all" />
     <type fullname="System.Math" preserve="all" />
@@ -243,6 +247,7 @@
     <type fullname="System.Net.ServicePointManager" preserve="all" />
     <type fullname="System.NotImplementedException" preserve="all" />
     <type fullname="System.NotSupportedException" preserve="all" />
+    <type fullname="System.Nullable`1" preserve="all" />
     <type fullname="System.Object" preserve="all" />
     <type fullname="System.ObsoleteAttribute" preserve="all" />
     <type fullname="System.ParamArrayAttribute" preserve="all" />
