@@ -14,10 +14,10 @@ namespace Game
         {
             switch(message.TypeId)
             {
-                case (int)ProtocolType.HpPoolUpdateNtf:
+                case (int)ProtocolType.BuildingUpdateNtf:
                     {
-                        //var ntf = message as HpPoolUpdateNtf;
-                        //Debug.Log($"HpPoolUpdateNtf: {ntf.HpPoolDTO.Hp}");
+                        var ntf = message as BuildingUpdateNtf;
+                        Debug.Log($"HpPoolUpdateNtf: {ntf.BuildingDTO.BusinessId}");
                     }
                     break;
                 case (int)ProtocolType.StartFightNtf:

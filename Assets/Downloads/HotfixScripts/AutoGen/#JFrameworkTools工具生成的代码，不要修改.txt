@@ -1,0 +1,2 @@
+1. Config是用excel工具生成的
+2. Controller,Model,Protocol都是用JFrameworkTools工具生成的

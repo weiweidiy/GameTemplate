@@ -29,6 +29,7 @@ namespace Game
         protected override void OnPanelShow()
         {
             base.OnPanelShow();
+            Debug.Log("!!!UIPanelLogin OnPanelShow");
             if (btnLogin != null)
             {
                 btnLogin.onClicked += OnLoginButtonClicked;

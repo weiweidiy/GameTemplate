@@ -61,7 +61,7 @@ namespace Game
             try
             {
                 string hubUrl = socketUrl.TrimEnd('/') + "/gamehub";
-                Debug.Log($"连接游戏服务器，URL={hubUrl}");
+                Debug.Log($"连接游戏服务器，URL={hubUrl} + token : {loginTask.Token}");
                 await network.Connect(hubUrl, loginTask.Token);
             }
             catch(Exception e)

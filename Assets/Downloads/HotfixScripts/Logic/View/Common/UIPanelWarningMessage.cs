@@ -10,7 +10,7 @@ namespace Game
     {
         public event Action onComplete;
 
-        [SerializeField] private TipsView textMessage;
+        [SerializeField] private TipsComponent textMessage;
 
 
         protected override void OnPanelShow()

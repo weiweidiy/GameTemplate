@@ -43,6 +43,11 @@ namespace Game
             }
 
         }
+
+        void Init()
+        {
+
+        }
     }
 
 }

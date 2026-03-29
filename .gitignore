@@ -1,8 +1,9 @@
 .DS_Store
 .vs/
 .vsconfig
+TextToolDatas/
 Assembly-CSharp-Editor.csproj
-
+Wx.csproj
 Assembly-CSharp.csproj
 Bins/
 ParrelSync.csproj
@@ -22,11 +23,13 @@ UserSettings/
 obj/
 Assets/StreamingAssets/
 Assets/StreamingAssets.meta
-
+YooAsset.MiniGame.Player.csproj
 Assembly-CSharp-firstpass.csproj
-
+YooAsset.MiniGame.csproj
 CustomToolbar.Editor.csproj
 UniTask.Addressables.csproj
+WxEditor.csproj
+Wx.Player.csproj
 UniTask.DOTween.csproj
 UniTask.Editor.csproj
 UniTask.Linq.csproj

@@ -1,9 +1,11 @@
 using Adic;
 using Adic.Container;
 using Cysharp.Threading.Tasks;
+using Game.Main;
 using JFramework;
 using JFramework.Unity;
 using System.Linq;
+using System.Net;
 using UnityEngine;
 
 
@@ -46,7 +48,11 @@ namespace Game
                 builder.SetControllerManager(new GameControllerManager());
                 builder.SetConfigManager(new GenConfigManager(assetsLoader, new JDataConverter()));
                 builder.SetGameAssetsQuary(new GameAssetsQuary());
+#if UNITY_WEBGL && WEIXINMINIGAME && !UNITY_EDITOR          
+                builder.SetSocket(new SignalRForWX());
+#else
                 builder.SetSocket(new SignalRSocket());
+#endif
                 builder.SetProtocolRegister(new AutoNetMessageRegister());
                 builder.SetNetworkMessageHandler(new MessageHandler());
                 facade = builder.Build();
@@ -56,7 +62,7 @@ namespace Game
             }
 
 
-            //ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+            ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
         }
 
         void BindInject()
@@ -67,15 +73,18 @@ namespace Game
             container.Bind<View>().ToSingleton<UIPanelLoginView>().As(DemoSceneType.SceneLogin.ToString());
             container.Bind<View>().ToSingleton<UIPanelNetworkHoldingView>().As(DemoSceneType.SceneLogin.ToString());
             container.Bind<View>().ToSingleton<UIPanelWarningMessageView>().As(DemoSceneType.SceneLogin.ToString());
+            container.Bind<View>().ToSingleton<LoginBackgroundView>().As(DemoSceneType.SceneLogin.ToString());
 
             //container.Bind<View>().ToSingleton<BackgroundView>().As(DemoSceneType.SceneCastle.ToString());
             //container.Bind<View>().ToSingleton<UIPanelStartMenuView>().As(DemoSceneType.SceneCastle.ToString());
+            container.Bind<View>().ToSingleton<UIPanelCastleView>().As(DemoSceneType.SceneCastle.ToString());
+            container.Bind<View>().ToSingleton<UIPanelStartMenuView>().As(DemoSceneType.SceneCastle.ToString());
 
         }
 
         public override async void Init()
         {
-            Debug.Log("Init " + GameLauncher.ServerUrl + " / " + GameLauncher.Account);
+            //Debug.Log("Init " + GameLauncher.ServerUrl + " / " + GameLauncher.Account);
             //var dispatcher = container.GetCommandDispatcher();
             //dispatcher.Dispatch<CommandStartupGame>();
 

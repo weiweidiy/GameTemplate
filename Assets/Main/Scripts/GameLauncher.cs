@@ -1,9 +1,9 @@
 using Cysharp.Threading.Tasks;
 using JFramework.Package;
-using LitJson;
+//using LitJson;
 using Sirenix.OdinInspector;
 using System.Collections.Generic;
-using TiktokGame;
+using Game.Main;
 using UnityEngine;
 using YooAsset;
 
@@ -65,18 +65,18 @@ public class GameLauncher : MonoBehaviour
         //Debug.Log("11111");
         //aot丢失问题，这里引用一下
         var task = new List<UniTask>();
-        var json = new List<PropertyMetadata>();
+        //var json = new List<PropertyMetadata>();
         var dic = new Dictionary<int, int>();
 
 
         ServerUrl = GetServerUrl(_targetServer);
         Account = _account;
 
-        var extraData = new RunableExtraData() { Data = new LaunchArgs() { playMode = PlayMode, url = HotfixUrl, packageName = PackageName} };
+        var extraData = new RunableExtraData() { Data = new LaunchArgs() { playMode = PlayMode, url = GetHotFixAddress(HotfixUrl), packageName = PackageName } };
 
         var initManager = new TiktokInitManager();
         //var routeManager = new RouteManager();
-        var patchManager = new TiktokPatchManager();
+        var patchManager = new GamePatchManager();
         var gameManager = new TiktokGameManager();
 
         Queue<IRunable> runables = new Queue<IRunable>();
@@ -100,4 +100,30 @@ public class GameLauncher : MonoBehaviour
                 return "https://localhost:7289/";
         }
     }
+
+    string GetHotFixAddress(string baseUrl)
+    {
+        if (Application.platform == RuntimePlatform.Android)
+        {
+            return $"{baseUrl}/Android";
+        }
+        else if (Application.platform == RuntimePlatform.IPhonePlayer)
+        {
+            return $"{baseUrl}/IOS";
+        }
+        else if (Application.platform == RuntimePlatform.WebGLPlayer)
+        {
+            return $"{baseUrl}/WX";
+        }
+        else if (Application.platform == RuntimePlatform.WeixinMiniGamePlayer)
+        {
+            return $"{baseUrl}/WX";
+        }
+        else
+        {
+            return $"{baseUrl}/PC";
+        }
+    }
+
+
 }

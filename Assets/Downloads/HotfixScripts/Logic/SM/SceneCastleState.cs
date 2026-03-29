@@ -1,6 +1,7 @@
 using Cysharp.Threading.Tasks;
 using JFramework;
 using JFramework.Unity;
+using System.Diagnostics;
 using System.Threading.Tasks;
 
 namespace Game.Demo
@@ -12,13 +13,15 @@ namespace Game.Demo
             await base.OnEnter(arg);
 
             //await OpenBackground();
-            //await OpenStartBattleMenu();
+            await OpenStartBattleMenu();
+            await OpenCastleUIPanel();
         }
 
         public override UniTask OnExit()
         {
             //CloseBackground();
-            //CloseStartBattleMenu();
+            CloseStartBattleMenu();
+            CloseCastleUIPanel();
 
             return base.OnExit();
         }
@@ -39,7 +42,7 @@ namespace Game.Demo
         }
 
         /// <summary>
-        /// ´ò¿ª±³¾°½çÃæ
+        /// æ‰“å¼€èƒŒæ™¯ç•Œé¢
         /// </summary>
         /// <returns></returns>
         async UniTask OpenBackground()
@@ -65,12 +68,13 @@ namespace Game.Demo
         }
 
         /// <summary>
-        /// ´ò¿ª¿ªÊ¼Õ½¶·²Ëµ¥½çÃæ
+        /// æ‰“å¼€å¼€å§‹æˆ˜æ–—èœå•ç•Œé¢
         /// </summary>
         /// <returns></returns>
         async UniTask OpenStartBattleMenu()
         {
             var ctrl = GetController<UIPanelStartMenuView>();
+            Debug.Assert(ctrl != null, "UIPanelStartMenuView controller is not found! Please check if it's added to the scene and registered in the SceneView.");
             ctrl.onStartFightClicked += Ctrl_onStartFightClicked;
             ctrl.Open(new ViewData() { prefabName = nameof(UIPanelStartMenu) });
             await UniTask.CompletedTask;
@@ -88,6 +92,19 @@ namespace Game.Demo
             var url = GameLauncher.ServerUrl + "api/Match/Match";
             var req = new ReqMatch() { };
             await context.Facade.GetControllerManager().GetController(nameof(MatchFightController)).Do(context, url, req);
+        }
+
+        private async UniTask OpenCastleUIPanel()
+        {
+            var ctrl = GetController<UIPanelCastleView>();
+            ctrl.Open(new UIPanelCastleViewData() { prefabName = nameof(UIPanelCastle) });
+            await UniTask.CompletedTask;
+        }
+
+        private void CloseCastleUIPanel()
+        {
+            var  ctrl = GetController<UIPanelCastleView>();
+            ctrl.Close();
         }
     }
 }

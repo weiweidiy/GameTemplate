@@ -1,4 +1,5 @@
 using Cysharp.Threading.Tasks;
+using JFramework;
 using JFramework.Game;
 using JFramework.Unity;
 using UnityEngine;
@@ -10,11 +11,19 @@ namespace Game
 {
     public class GameAssetsQuary : IGameAssetsQuary
     {
-
+        /// <summary>
+        /// 配置表管理器，使用方法： var cfgData = configManager.Get<TexturesCfgData>(uid);
+        /// </summary>
         IJConfigManager configManager;
 
+        /// <summary>
+        /// model管理器，使用方法： var model = modelManager.Get<PlayerModel>();
+        /// </summary>
         IModelManager modelManager;
 
+        /// <summary>
+        /// 精灵纹理管理器，使用方法： 预加载过的可以 var sp = spriteManager.GetSprite(spName);  没有预加载过的可以 var sp = await spriteManager.LoadSpriteAsync(spName); 
+        /// </summary>
         ISpriteManager spriteManager;
 
 
@@ -23,6 +32,7 @@ namespace Game
             configManager = facade.GetConfigManager();
             modelManager = facade.GetModelManager();
             spriteManager = facade.GetSpriteManager();
+            
         }
 
         public UniTask<Sprite> GetBackgroundSpriteAsync()
@@ -32,8 +42,11 @@ namespace Game
                 Debug.LogError("SpriteManager is null 请调用SetFacade 设置facade");
                 return UniTask.FromResult<Sprite>(null);
             }
+            //to do: 通过configManager获取名字，这里只是演示 ：
+            //var uid = "1";
+            //var spName = configManager.Get<TexturesCfgData>(uid).Path;
             var spName = "4pd_img_background_lobby_1";
-            var sp = spriteManager.GetSprite(spName);
+            var sp = spriteManager.GetSprite(spName); //这里必须是配置表中有预加载的资源，否则使用LoadSpriteAsync动态加载
 
             return UniTask.FromResult(sp);
         }

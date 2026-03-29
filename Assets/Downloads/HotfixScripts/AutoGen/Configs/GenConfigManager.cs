@@ -12,6 +12,7 @@ namespace JFramework.Unity
         public GenConfigManager(IConfigLoader loader, IDeserializer deserializer) : base(loader)
         {
           RegisterTable<PrefabsTable, PrefabsCfgData>(nameof(PrefabsTable), deserializer);
+          RegisterTable<TestTable, TestCfgData>(nameof(TestTable), deserializer);
           RegisterTable<TexturesTable, TexturesCfgData>(nameof(TexturesTable), deserializer);
         }
     }

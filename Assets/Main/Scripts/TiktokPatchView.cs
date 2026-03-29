@@ -1,9 +1,9 @@
-﻿//using TiktokGame;
+﻿//using Game.Main;
 using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-namespace TiktokGame
+namespace Game.Main
 {
     public class TiktokPatchView : MonoBehaviour
     {

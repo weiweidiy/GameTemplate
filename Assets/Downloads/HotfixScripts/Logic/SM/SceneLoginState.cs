@@ -1,5 +1,6 @@
 using Cysharp.Threading.Tasks;
 using Game.Demo;
+using JFramework;
 using JFramework.Unity;
 using System;
 using System.Threading.Tasks;
@@ -13,16 +14,22 @@ namespace Game
         {
             await base.OnEnter(arg);
 
-            OpenLoginPanel();
+            //打开登录
+            OpenLoginUIPanel();
+            OpenLoginBackground();
+
+            Debug.Log("!!!Entered Login State");
         }
-
-
 
         public override UniTask OnExit()
         {
-            CloseLoginPanel();
+            CloseLoginUIPanel();
+            CloseLoginBackground();
+
             return base.OnExit();
         }
+
+
         protected override string GetBGMClipName()
         {
             return "";
@@ -38,21 +45,40 @@ namespace Game
             return "UISceneLoginSettings";
         }
 
-        void OpenLoginPanel()
+        #region 显示/隐藏UI
+        void OpenLoginUIPanel()
         {
             var ctrl = GetController<UIPanelLoginView>();
             ctrl.onLoginClicked += OnLoginClicked;
             ctrl.Open(new ViewData() { prefabName = nameof(UIPanelLogin) });
         }
 
-        void CloseLoginPanel()
+        void CloseLoginUIPanel()
         {
             var ctrl = GetController<UIPanelLoginView>();
             ctrl.onLoginClicked -= OnLoginClicked;
             ctrl.Close();
         }
 
-        #region 控制器事件
+        private void OpenLoginBackground()
+        {
+            var ctrl = GetController<LoginBackgroundView>();
+            var configManager = context.Facade.GetConfigManager();
+            var cfgData = configManager.Get<PrefabsCfgData>("2");
+            var prefabName = cfgData.PrefabName;
+            ctrl.Open(new SingleGameObjectViewData() { prefabName = prefabName, parent = null });
+        }
+
+
+        private void CloseLoginBackground()
+        {
+            var ctrl = GetController<LoginBackgroundView>();
+
+            ctrl.Close();
+        }
+        #endregion
+
+        #region 交互事件
         private async void OnLoginClicked(string account)
         {
             //Debug.Log("Login Clicked");
@@ -62,10 +88,10 @@ namespace Game
                 var url = GameLauncher.ServerUrl + "Account/FastLogin";
                 var req = new AccountDTO() { Uid = accountToUse };
                 var urlEnter = GameLauncher.ServerUrl + "api/Game/EnterGame";
-                var reqEnter = new ReqEnterGame() {  };
+                var reqEnter = new ReqEnterGame() { };
                 var socketUrl = GameLauncher.ServerUrl;
 
-                await context.Facade.GetControllerManager().GetController(nameof(LoginController)).Do(context, url,req,urlEnter,reqEnter, socketUrl);
+                await context.Facade.GetControllerManager().GetController(nameof(LoginController)).Do(context, url, req, urlEnter, reqEnter, socketUrl);
             }
             catch(Exception ex)
             {

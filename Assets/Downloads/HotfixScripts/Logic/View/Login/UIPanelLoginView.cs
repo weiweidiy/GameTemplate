@@ -13,7 +13,7 @@ namespace Game
 
         public override void Open<TArg>(TArg args)
         {
-            Debug.Log("DemoLoginController Open " + args.prefabName);
+            Debug.Log("！！！！！！DemoLoginController Open " + args.prefabName);
             panel = GetUIManager().ShowPanel(args.prefabName, new UIPanelLoginProperties()) as UIPanelLogin;
             panel.onLoginButtonClicked += OnLoginButtonClicked;
         }
@@ -30,6 +30,7 @@ namespace Game
 
         private void OnLoginButtonClicked(string account)
         {
+            Debug.Log("UIPanelLoginView onClick");
             onLoginClicked?.Invoke(account);
         }
     }
