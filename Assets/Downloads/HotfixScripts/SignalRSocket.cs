@@ -135,14 +135,53 @@ namespace Game
             }
         }
 
-        public override Task RPCVoid(string method, object param = null, TimeSpan? timeout = null)
+        public override async Task RPCVoid(string method, object param = null, TimeSpan? timeout = null)
         {
-            throw new NotImplementedException();
+            if (!IsOpen)
+            {
+                OnError(this, "Connection is not open.");
+                return;
+            }
+            try
+            {
+                if (param == null)
+                {
+                    await connection.InvokeAsync(method);
+                }
+                else
+                {
+                    await connection.InvokeAsync(method, param);
+                }
+            }
+            catch (Exception ex)
+            {
+                OnError(this, ex.Message);
+            }
         }
 
-        public override Task<TResponse> RPC<TResponse>(string method, object param = null, TimeSpan? timeout = null)
+        public override async Task<TResponse> RPC<TResponse>(string method, object param = null, TimeSpan? timeout = null)
         {
-            throw new NotImplementedException();
+            if (!IsOpen)
+            {
+                OnError(this, "Connection is not open.");
+                return default;
+            }
+            try
+            {
+                if (param == null)
+                {
+                    return await connection.InvokeAsync<TResponse>(method);
+                }
+                else
+                {
+                    return await connection.InvokeAsync<TResponse>(method, param);
+                }
+            }
+            catch (Exception ex)
+            {
+                OnError(this, ex.Message);
+                return default;
+            }
         }
 
     }
