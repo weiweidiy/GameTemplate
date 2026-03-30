@@ -18,10 +18,6 @@ namespace Game
         public override void Init(string url, string token)
         {
             this.url = url;
-            //connection = new HubConnectionBuilder()
-            //    .WithUrl(url)
-            //    .WithAutomaticReconnect()
-            //    .Build();
 
             connection = new HubConnectionBuilder()
                             .WithUrl(url, options =>
@@ -100,23 +96,54 @@ namespace Game
             }
         }
 
-        public override async void Send(byte[] data)
+        public override async Task<byte[]> Send(byte[] data)
         {
             if (!IsOpen)
             {
                 OnError(this, "Connection is not open.");
-                return;
+                return default;
             }
             try
             {
-                // 假设服务器端有 "SendBinary" 方法用于接收二进制数据
-                //await connection.InvokeAsync("Ping");
-                await connection.InvokeAsync("SendBinary", data);
+                // 需要服务器端实现 SendBinaryWithResult
+                return await connection.InvokeAsync<byte[]>("SendBinary", data);
             }
             catch (Exception ex)
             {
                 OnError(this, ex.Message);
+                return default;
             }
         }
+
+
+        public override async Task<string> Send(string message)
+        {
+            if (!IsOpen)
+            {
+                OnError(this, "Connection is not open.");
+                return default;
+            }
+            try
+            {
+                // 需要服务器端实现 SendBinaryWithResult
+                return await connection.InvokeAsync<string>("SendMessage", message);
+            }
+            catch (Exception ex)
+            {
+                OnError(this, ex.Message);
+                return default;
+            }
+        }
+
+        public override Task RPCVoid(string method, object param = null, TimeSpan? timeout = null)
+        {
+            throw new NotImplementedException();
+        }
+
+        public override Task<TResponse> RPC<TResponse>(string method, object param = null, TimeSpan? timeout = null)
+        {
+            throw new NotImplementedException();
+        }
+
     }
 }

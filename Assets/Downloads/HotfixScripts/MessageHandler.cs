@@ -20,9 +20,15 @@ namespace Game
                         Debug.Log($"HpPoolUpdateNtf: {ntf.BuildingDTO.BusinessId}");
                     }
                     break;
+                case (int)ProtocolType.StartFightNtf:
+                    {
+                        var ntf = message as StartFightNtf;
+                        Debug.Log("port： " + ntf.Port);
+                    }
+                    break;
                 //case (int)ProtocolType.StartFightNtf:
                 //    {
-                        
+
                 //        //var ntf = message as StartFightNtf;
                 //        //var port = ntf.Port;
                 //        //Debug.Log($"Received StartFightNtf, connecting to fight server at port {port}...");

@@ -17,6 +17,7 @@ namespace Game
                 TypeId = (int)ProtocolType.StartFightNtf
             });
 
+            Debug.Log($"匹配成功 IP： 端口：{ntf.Port}");
 
             //var httpRequest = context.Facade.GetHttpRequest();
             //ResMatch matchTask = null;

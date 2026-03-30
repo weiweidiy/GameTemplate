@@ -14,19 +14,12 @@
       "dependencies": {},
       "hash": "73a63b7f672b88f7e9992f6917eb458a8cbb6fa9"
     },
-    "com.hiplay.jframework": {
-      "version": "https://github.com/weiweidiy/com.hiplay.jframework.git",
-      "depth": 0,
-      "source": "git",
-      "dependencies": {},
-      "hash": "e533e2a8018c6244b8d4ebbe073165de2ac4dcf1"
-    },
     "com.hiplay.jframework.unity": {
       "version": "https://github.com/weiweidiy/com.hiplay.jframework.unity.git",
       "depth": 0,
       "source": "git",
       "dependencies": {},
-      "hash": "eaf12fd63405f1fc7c49daadb13880964f187993"
+      "hash": "5099d5cb885d94065ceba01833ad780200b7e296"
     },
     "com.qq.weixin.minigame": {
       "version": "file:com.qq.weixin.minigame@8d70f12537",
