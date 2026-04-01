@@ -1,6 +1,7 @@
 using JFramework;
 using JFramework.Game;
 using JFramework.Unity;
+using System;
 
 
 
@@ -15,8 +16,25 @@ namespace Game
 
             //这里可以安装一些基础设施相关的服务，比如日志系统、性能监视系统等等
 
-
+            var network = InstallNetworkManager(services);
         }
+
+        private object InstallNetworkManager(IServiceRegistry services)
+        {
+            if (!services.TryResolve<IJNetwork>(out var networkManageer))
+            {
+                var builder = new JNetworkBuilder()
+                                        .SetSocket(new SignalRSocket())
+                                        .SetProtocolRegister(new AutoNetMessageRegister())
+                                        .SetMessageHandler(new MessageHandler());
+
+                networkManageer = builder.Build();
+
+                services.AddSingleton<IJNetwork>(networkManageer);
+            }
+            return networkManageer;
+        }
+
 
         protected override IAssetsLoader InstallAssetsLoader(IServiceRegistry services)
         {

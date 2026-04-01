@@ -54,9 +54,16 @@ namespace Game.MyModule
 
         private async void LoginView_onLoginClicked(string account)
         {
+            var accountToUse = string.IsNullOrEmpty(account) ? GameLauncher.Account : account;
+            var url = GameLauncher.ServerUrl + "Account/FastLogin";
+            var req = new AccountDTO() { Uid = accountToUse };
+            var urlEnter = GameLauncher.ServerUrl + "api/Game/EnterGame";
+            var reqEnter = new ReqEnterGame() { };
+            var socketUrl = GameLauncher.ServerUrl;
+
 
             var controller = sceneContext.Controllers.Get<LoginController>();
-            await controller.Do(gameContext);
+            await controller.Do(gameContext, url, req, urlEnter, reqEnter, socketUrl);
         }
 
         public override UniTask ExitAsync()

@@ -7,7 +7,7 @@ namespace Game.MyModule
         private static readonly IModuleInstaller[] Modules =
         {
             new ModelRegistryModule(),
-            new PresentationRegistryModule(),
+            new ViewRegistryModule(),
             new ControllerRegistryModule(),
             new SceneRegistryModule(),
             new InitializerModule(),

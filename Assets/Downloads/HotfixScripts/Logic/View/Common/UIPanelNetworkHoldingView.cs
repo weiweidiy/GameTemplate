@@ -15,7 +15,7 @@ namespace Game
 
         public override void Close()
         {
-            //throw new System.NotImplementedException();
+            GetUIManager().HidePanel(panel.ScreenId);
         }
 
         public override void Open<TArg>(TArg args)
@@ -30,13 +30,13 @@ namespace Game
 
         Task IRunable.Start(RunableExtraData extraData, TaskCompletionSource<bool> tcs = null)
         {
-            panel = GetUIManager().ShowPanel("UIPanelNetworkHolding", new UIPanelNetworkHoldingProperties()) as UIPanelNetworkHolding;
+            panel = GetUIManager().ShowPanel(nameof(UIPanelNetworkHolding), new UIPanelNetworkHoldingProperties()) as UIPanelNetworkHolding;
             return Task.CompletedTask;
         }
 
        void IRunable.Stop()
         {
-            GetUIManager().HidePanel("UIPanelNetworkHolding");
+            GetUIManager().HidePanel(panel.ScreenId);
             onComplete?.Invoke(this);
         }
 

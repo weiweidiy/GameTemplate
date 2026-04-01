@@ -3,7 +3,7 @@ using JFramework.Unity;
 namespace Game.MyModule
 {
 
-    public sealed class PresentationRegistryModule : IModuleInstaller
+    public sealed class ViewRegistryModule : IModuleInstaller
     {
         public void Install(IServiceRegistry services)
         {
@@ -16,6 +16,8 @@ namespace Game.MyModule
             var views = services.Resolve<IViewRegistry>();
             views.RegisterForScene(typeof(LoginState), new UIPanelLoginView());
             views.RegisterForScene(typeof(LoginState), new LoginBackgroundView());
+            views.RegisterForScene(typeof(LoginState), new UIPanelNetworkHoldingView());
+            views.RegisterForScene(typeof(LoginState), new UIPanelWarningMessageView());
         }
     }
 }
