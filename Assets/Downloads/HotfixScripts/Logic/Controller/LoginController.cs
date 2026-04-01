@@ -23,8 +23,8 @@ namespace Game
 
             var socketUrl = parameters[4] as string;
 
-            var netholdingView = context.Services.Resolve<IViewRegistry>().GetViewForScene<LoginState, UIPanelNetworkHoldingView>();
-            var tipsView = context.Services.Resolve<IViewRegistry>().GetViewForScene<LoginState, UIPanelWarningMessageView>();
+            var netholdingView = context.Services.Resolve<IViewRegistry>().GetViewForScene<SceneLoginState, UIPanelNetworkHoldingView>();
+            var tipsView = context.Services.Resolve<IViewRegistry>().GetViewForScene<SceneLoginState, UIPanelWarningMessageView>();
 
             AccountDTO accountDto;
 
@@ -48,8 +48,9 @@ namespace Game
                 var enterGame = await httpRequest.HttpRequestAsync<ReqEnterGame, ResEnterGame>(urlEnter, reqEnter, null, netholdingView);
                 Debug.Log($"进入游戏成功，SocketUrl={enterGame.PlayerDTO.Username}");
 
-                //var model = sceneContext.Facade.GetModelManager().GetModel<PlayerModel>();
-                //model.Initialize(new List<PlayerDTO>() { enterGame.PlayerDTO });
+                var model = context.Services.Resolve<IModelRegistry>().Get<PlayerModel>();
+                model.Initialize(new List<PlayerDTO>() { enterGame.PlayerDTO });
+                Debug.Log($"玩家数据初始化成功，PlayerName={enterGame.PlayerDTO.Username}");
             }
             catch (Exception e)
             {
@@ -78,7 +79,7 @@ namespace Game
             var provider = context.Services.Resolve<ITransitionProvider>();
             var transition = await provider.InstantiateAsync(TransitionType.SMFadeTransition.ToString());
             await transition.TransitionOut();
-            await context.Services.Resolve<ISceneFlow>().EnterAsync<MainState>();
+            await context.Services.Resolve<ISceneFlow>().EnterAsync<SceneMainState>();
             await transition.TransitionIn();
 
 
@@ -145,7 +146,7 @@ namespace Game
 
 
             //var transition = await sceneContext.Facade.TransitonOut(TransitionType.SMFadeTransition.ToString());
-            //await sceneContext.Facade.GetSceneStateMachine().SwitchToState(GameSceneType.SceneCastle.ToString(), sceneContext).AsTask();
+            //await sceneContext.Facade.GetSceneStateMachine().SwitchToState(GameSceneType.SceneMain.ToString(), sceneContext).AsTask();
             //await sceneContext.Facade.TransitonIn(transition);
         }
 

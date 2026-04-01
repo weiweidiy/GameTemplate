@@ -12,11 +12,11 @@ namespace Game.MyModule
                 services.AddSingleton<ISceneStateRegistry>(new SceneStateRegistry());
 
             var states = services.Resolve<ISceneStateRegistry>();
-            if (!states.TryGet<LoginState>(out _))
-                states.Register(new LoginState());
+            if (!states.TryGet<SceneLoginState>(out _))
+                states.Register(new SceneLoginState());
 
-            if (!states.TryGet<MainState>(out _))
-                states.Register(new MainState());
+            if (!states.TryGet<SceneMainState>(out _))
+                states.Register(new SceneMainState());
 
 
             //注册场景上下文和游戏上下文
@@ -40,7 +40,7 @@ namespace Game.MyModule
                     new SceneFlowService(
                         services.Resolve<ISceneStateRegistry>(),
                         services.Resolve<ISceneContext>(),
-                        typeof(LoginState)));
+                        typeof(SceneLoginState)));
             }
 
 

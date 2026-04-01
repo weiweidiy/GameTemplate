@@ -1,5 +1,5 @@
 using Cysharp.Threading.Tasks;
-using Game.Demo;
+
 using JFramework;
 using JFramework.Unity;
 using System;
@@ -17,7 +17,7 @@ namespace Game
         SceneGuide,
         SceneGame,
         RoomScene,
-        SceneCastle,
+        SceneMain,
     }
 
     public abstract class BaseGameSceneState : BaseSceneState<GameSceneType>
@@ -155,7 +155,7 @@ namespace Game
     //        if (stateName == GameSceneType.SceneLogin.ToString())
     //            return SwitchToLogin();
 
-    //        if (stateName == GameSceneType.SceneCastle.ToString())
+    //        if (stateName == GameSceneType.SceneMain.ToString())
     //            return SwitchToCastle(null);
 
     //        if (stateName == GameSceneType.RoomScene.ToString())

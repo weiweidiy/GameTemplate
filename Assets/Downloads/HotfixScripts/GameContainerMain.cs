@@ -83,8 +83,8 @@ namespace Game
             //container.Bind<View>().ToSingleton<LoginBackgroundView>().As(GameSceneType.SceneLogin.ToString());
 
 
-            //container.Bind<View>().ToSingleton<UIPanelCastleView>().As(GameSceneType.SceneCastle.ToString());
-            //container.Bind<View>().ToSingleton<UIPanelStartMenuView>().As(GameSceneType.SceneCastle.ToString());
+            //container.Bind<View>().ToSingleton<UIPanelCastleView>().As(GameSceneType.SceneMain.ToString());
+            //container.Bind<View>().ToSingleton<UIPanelStartMenuView>().As(GameSceneType.SceneMain.ToString());
 
         }
 

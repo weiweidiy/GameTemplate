@@ -24,9 +24,9 @@ namespace Game
                 viewControllers.Add(GameSceneType.SceneLogin.ToString(), new List<View>());
             }
 
-            if (!viewControllers.ContainsKey(GameSceneType.SceneCastle.ToString()))
+            if (!viewControllers.ContainsKey(GameSceneType.SceneMain.ToString()))
             {
-                viewControllers.Add(GameSceneType.SceneCastle.ToString(), new List<View>());
+                viewControllers.Add(GameSceneType.SceneMain.ToString(), new List<View>());
             }
 
 
@@ -36,10 +36,10 @@ namespace Game
                 viewControllers[GameSceneType.SceneLogin.ToString()].Add(view);
             }
 
-            var sceneCastleViews = container.ResolveAll<View>(GameSceneType.SceneCastle.ToString());
+            var sceneCastleViews = container.ResolveAll<View>(GameSceneType.SceneMain.ToString());
             foreach (var view in sceneCastleViews)
             {
-                viewControllers[GameSceneType.SceneCastle.ToString()].Add(view);
+                viewControllers[GameSceneType.SceneMain.ToString()].Add(view);
             }
 
         }

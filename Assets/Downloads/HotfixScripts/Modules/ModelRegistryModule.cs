@@ -1,3 +1,4 @@
+using JFramework;
 using JFramework.Unity;
 
 namespace Game.MyModule
@@ -9,10 +10,12 @@ namespace Game.MyModule
             if (!services.TryResolve<IModelRegistry>(out _))
                 services.AddSingleton<IModelRegistry>(new ModelRegistry());
 
+            var eventManager = services.Resolve<EventManager>();
+
 
             var models = services.Resolve<IModelRegistry>();
-            if (!models.TryGet<MyModuleStatusModel>(out _))
-                models.Register(new MyModuleStatusModel());
+            if (!models.TryGet<PlayerModel>(out _))
+                models.Register(new PlayerModel(((dto) => dto.Uid), eventManager));
         }
     }
 }

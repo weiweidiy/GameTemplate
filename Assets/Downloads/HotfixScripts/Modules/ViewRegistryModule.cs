@@ -14,10 +14,10 @@ namespace Game.MyModule
                 services.AddSingleton<IViewRegistry>(new ViewRegistry());
 
             var views = services.Resolve<IViewRegistry>();
-            views.RegisterForScene(typeof(LoginState), new UIPanelLoginView());
-            views.RegisterForScene(typeof(LoginState), new LoginBackgroundView());
-            views.RegisterForScene(typeof(LoginState), new UIPanelNetworkHoldingView());
-            views.RegisterForScene(typeof(LoginState), new UIPanelWarningMessageView());
+            views.RegisterForScene(typeof(SceneLoginState), new UIPanelLoginView());
+            views.RegisterForScene(typeof(SceneLoginState), new LoginBackgroundView());
+            views.RegisterForScene(typeof(SceneLoginState), new UIPanelNetworkHoldingView());
+            views.RegisterForScene(typeof(SceneLoginState), new UIPanelWarningMessageView());
         }
     }
 }
