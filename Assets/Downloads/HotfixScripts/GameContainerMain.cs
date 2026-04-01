@@ -2,6 +2,7 @@ using Adic;
 using Adic.Container;
 using Cysharp.Threading.Tasks;
 using Game.Main;
+using Game.MyModule;
 using JFramework;
 using JFramework.Unity;
 using System.Linq;
@@ -22,8 +23,8 @@ namespace Game
 
         public IInjectionContainer Container { get { return container; } }
 
-        JFacade facade;
 
+        private IJApp app;
         public override void SetupContainers()
         {
             container = AddContainer<InjectionContainer>(/*ResolutionMode.RETURN_NULL*/)
@@ -35,34 +36,40 @@ namespace Game
 
             try
             {
-                BindInject();
+                //                BindInject();
 
-                var assetsLoader = new YooAssetsLoader();
-                var builder = new FacadeBuilder();
+                //                var assetsLoader = new YooAssetsLoader();
+                //                var builder = new FacadeBuilder();
 
-                builder.SetAssetsLoader(assetsLoader);
-                builder.SetSceneStateMachine(new SceneSM());
-                builder.SetFirstSceneState(DemoSceneType.SceneLogin.ToString());
-                builder.SetViewControllerContainer(new GameViewManager(container));
-                builder.SetModelManager(new GameModelManager());
-                builder.SetControllerManager(new GameControllerManager());
-                builder.SetConfigManager(new GenConfigManager(assetsLoader, new JDataConverter()));
-                builder.SetGameAssetsQuary(new GameAssetsQuary());
-#if UNITY_WEBGL && WEIXINMINIGAME && !UNITY_EDITOR          
-                builder.SetSocket(new SignalRForWX());
-#else
-                builder.SetSocket(new SignalRSocket());
-#endif
-                builder.SetProtocolRegister(new AutoNetMessageRegister());
-                builder.SetNetworkMessageHandler(new MessageHandler());
-                facade = builder.Build();
-            }catch (System.Exception ex)
+                //                builder.SetAssetsLoader(assetsLoader);
+                //                builder.SetSceneStateMachine(new SceneSM());
+                //                builder.SetFirstSceneState(DemoSceneType.SceneLogin.ToString());
+                //                builder.SetViewControllerContainer(new GameViewManager(container));
+                //                builder.SetModelManager(new GameModelManager());
+                //                builder.SetControllerManager(new GameControllerManager());
+                //                builder.SetConfigManager(new GenConfigManager(assetsLoader, new JDataConverter()));
+                //                builder.SetGameAssetsQuary(new GameAssetsQuary());
+                //#if UNITY_WEBGL && WEIXINMINIGAME && !UNITY_EDITOR          
+                //                builder.SetSocket(new SignalRForWX());
+                //#else
+                //                builder.SetSocket(/*new UnityWebSocketImp()*/ new SignalRSocket());
+                //#endif
+                //                builder.SetProtocolRegister(new AutoNetMessageRegister());
+                //                builder.SetNetworkMessageHandler(new MessageHandler());
+                //                facade = builder.Build();
+            }
+            catch (System.Exception ex)
             {
                 Debug.LogError("TiktokContainerMain SetupContainers error " + ex);
             }
 
 
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
+
+            app = new JAppBuilder()
+                            .AddModule(new GameFoundationModule())
+                            .AddModule(new GameModules())
+                            .Build();
         }
 
         void BindInject()
@@ -70,36 +77,36 @@ namespace Game
             //container.Bind<GameViewManager>().ToSingleton();
 
             //
-            container.Bind<View>().ToSingleton<UIPanelLoginView>().As(DemoSceneType.SceneLogin.ToString());
-            container.Bind<View>().ToSingleton<UIPanelNetworkHoldingView>().As(DemoSceneType.SceneLogin.ToString());
-            container.Bind<View>().ToSingleton<UIPanelWarningMessageView>().As(DemoSceneType.SceneLogin.ToString());
-            container.Bind<View>().ToSingleton<LoginBackgroundView>().As(DemoSceneType.SceneLogin.ToString());
+            //container.Bind<View>().ToSingleton<UIPanelLoginView>().As(DemoSceneType.SceneLogin.ToString());
+            //container.Bind<View>().ToSingleton<UIPanelNetworkHoldingView>().As(DemoSceneType.SceneLogin.ToString());
+            //container.Bind<View>().ToSingleton<UIPanelWarningMessageView>().As(DemoSceneType.SceneLogin.ToString());
+            //container.Bind<View>().ToSingleton<LoginBackgroundView>().As(DemoSceneType.SceneLogin.ToString());
 
-            //container.Bind<View>().ToSingleton<BackgroundView>().As(DemoSceneType.SceneCastle.ToString());
+
+            //container.Bind<View>().ToSingleton<UIPanelCastleView>().As(DemoSceneType.SceneCastle.ToString());
             //container.Bind<View>().ToSingleton<UIPanelStartMenuView>().As(DemoSceneType.SceneCastle.ToString());
-            container.Bind<View>().ToSingleton<UIPanelCastleView>().As(DemoSceneType.SceneCastle.ToString());
-            container.Bind<View>().ToSingleton<UIPanelStartMenuView>().As(DemoSceneType.SceneCastle.ToString());
 
         }
 
         public override async void Init()
         {
+            await app.RunAsync();
             //Debug.Log("Init " + GameLauncher.ServerUrl + " / " + GameLauncher.Account);
             //var dispatcher = container.GetCommandDispatcher();
             //dispatcher.Dispatch<CommandStartupGame>();
 
-            await facade.Run(configManager =>
-            {
-                var prefabDataList = configManager.GetAll<PrefabsCfgData>();
-                var prefabNames = prefabDataList.Select(x => x.PrefabName).ToList();
-                var taskPreloadGo = facade.PreloadGameObjects(prefabNames);
+            //await facade.Run(configManager =>
+            //{
+            //    var prefabDataList = configManager.GetAll<PrefabsCfgData>();
+            //    var prefabNames = prefabDataList.Select(x => x.PrefabName).ToList();
+            //    var taskPreloadGo = facade.PreloadGameObjects(prefabNames);
 
-                var spriteDataList = configManager.GetAll<TexturesCfgData>();
-                var spriteNames = spriteDataList.Select(x => x.Path).ToList();
-                var taskPreloadSp = facade.PreloadSprites(spriteNames);
+            //    var spriteDataList = configManager.GetAll<TexturesCfgData>();
+            //    var spriteNames = spriteDataList.Select(x => x.Path).ToList();
+            //    var taskPreloadSp = facade.PreloadSprites(spriteNames);
 
-                return UniTask.WhenAll(taskPreloadGo, taskPreloadSp);
-            });
+            //    return UniTask.WhenAll(taskPreloadGo, taskPreloadSp);
+            //});
         }
 
     }

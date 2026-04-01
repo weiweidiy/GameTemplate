@@ -18,10 +18,10 @@ namespace Game
             //});
 
 
-            //await context.Facade.GetNetworkManager().RPCVoid("Ping");
-            var res = await context.Facade.GetNetworkManager().RPC<BuildingDTO>("TestRPC", new BuildingDTO() { });
+            ////await context.Facade.GetNetworkManager().RPCVoid("Ping");
+            //var res = await context.Facade.GetNetworkManager().RPC<BuildingDTO>("TestRPC", new BuildingDTO() { });
 
-            Debug.Log($"res ok building level:" + res.Level);
+            //Debug.Log($"res ok building level:" + res.Level);
 
             //Debug.Log($"匹配成功 IP： 端口：{ntf.Port}");
 

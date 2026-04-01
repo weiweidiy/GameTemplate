@@ -62,19 +62,19 @@ namespace Game
 
         private void OpenLoginBackground()
         {
-            var ctrl = GetController<LoginBackgroundView>();
-            var configManager = context.Facade.GetConfigManager();
-            var cfgData = configManager.Get<PrefabsCfgData>("2");
-            var prefabName = cfgData.PrefabName;
-            ctrl.Open(new SingleGameObjectViewData() { prefabName = prefabName, parent = null });
+            //var ctrl = GetController<LoginBackgroundView>();
+            //var configManager = context.Facade.GetConfigManager();
+            //var cfgData = configManager.Get<PrefabsCfgData>("2");
+            //var prefabName = cfgData.PrefabName;
+            //ctrl.Open(new SingleGameObjectViewData() { prefabName = prefabName, parent = null });
         }
 
 
         private void CloseLoginBackground()
         {
-            var ctrl = GetController<LoginBackgroundView>();
+            //var ctrl = GetController<LoginBackgroundView>();
 
-            ctrl.Close();
+            //ctrl.Close();
         }
         #endregion
 
@@ -91,7 +91,7 @@ namespace Game
                 var reqEnter = new ReqEnterGame() { };
                 var socketUrl = GameLauncher.ServerUrl;
 
-                await context.Facade.GetControllerManager().GetController(nameof(LoginController)).Do(context, url, req, urlEnter, reqEnter, socketUrl);
+                //await context.Facade.GetControllerManager().GetController(nameof(LoginController)).Do(context, url, req, urlEnter, reqEnter, socketUrl);
             }
             catch(Exception ex)
             {

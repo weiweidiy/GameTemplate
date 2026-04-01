@@ -7,6 +7,7 @@ using JFramework.Unity;
 
 namespace Game
 {
+
     public class SignalRSocket : JBaseSocket
     {
         private HubConnection connection;

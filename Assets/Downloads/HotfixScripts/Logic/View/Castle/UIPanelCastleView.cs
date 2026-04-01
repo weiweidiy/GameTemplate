@@ -16,16 +16,16 @@ namespace Game
 
         public override void Open<TArg>(TArg args)
         {
-            var data = args as UIPanelCastleViewData;
-            var configManager = context.Facade.GetConfigManager();
-            cfgData = configManager.Get<TestCfgData>("3");
-            var color = data?.color ?? Color.white;
+            //var data = args as UIPanelCastleViewData;
+            //var configManager = context.Facade.GetConfigManager();
+            //cfgData = configManager.Get<TestCfgData>("3");
+            //var color = data?.color ?? Color.white;
 
-            panel = GetUIManager().ShowPanel(args.prefabName, new UIPanelCastleProperties()
-            {
-                cfgData = cfgData,
-                color = color,
-            }) as UIPanelCastle;
+            //panel = GetUIManager().ShowPanel(args.prefabName, new UIPanelCastleProperties()
+            //{
+            //    cfgData = cfgData,
+            //    color = color,
+            //}) as UIPanelCastle;
         }
 
 

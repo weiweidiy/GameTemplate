@@ -10,22 +10,22 @@ namespace Game
     {
         public override async Task Do(GameContext context, params object[] parameters)
         {
-            var httpRequest = context.Facade.GetHttpRequest();
-            ResStartFight fightTask = null;
-            var url = parameters[0] as string;
-            var req = parameters[1] as ReqStartFight;
+            //var httpRequest = context.Facade.GetHttpRequest();
+            //ResStartFight fightTask = null;
+            //var url = parameters[0] as string;
+            //var req = parameters[1] as ReqStartFight;
 
-            try
-            {
-                fightTask = await httpRequest.HttpRequestAsync<ReqStartFight, ResStartFight>(url, req);
-            }
-            catch (Exception e)
-            {
-               // Debug.LogError($"开始战斗失败，错误信息：{e.Message}");
-                throw;
+            //try
+            //{
+            //    fightTask = await httpRequest.HttpRequestAsync<ReqStartFight, ResStartFight>(url, req);
+            //}
+            //catch (Exception e)
+            //{
+            //   // Debug.LogError($"开始战斗失败，错误信息：{e.Message}");
+            //    throw;
 
-            }
-            //Debug.Log($"发起战斗成功 端口：" + fightTask.Port);
+            //}
+            ////Debug.Log($"发起战斗成功 端口：" + fightTask.Port);
         }
     }
 }

@@ -47,24 +47,24 @@ namespace Game.Demo
         /// <returns></returns>
         async UniTask OpenBackground()
         {
-            var ctrl = GetController<BackgroundView>() ;
-            var assetsQuery = context.Facade.GetGameAssetsQuary() as GameAssetsQuary;
-            var spBackground = await assetsQuery.GetBackgroundSpriteAsync();
+            //var ctrl = GetController<BackgroundView>() ;
+            //var assetsQuery = context.Facade.GetGameAssetsQuary() as GameAssetsQuary;
+            //var spBackground = await assetsQuery.GetBackgroundSpriteAsync();
 
-            ctrl.Open(new BackgroundViewData()
-            {
-                prefabName = "Castle"
-                ,
-                parent = goRoot
-                ,
-                sp = spBackground
-            });
+            //ctrl.Open(new BackgroundViewData()
+            //{
+            //    prefabName = "Castle"
+            //    ,
+            //    parent = goRoot
+            //    ,
+            //    sp = spBackground
+            //});
         }
 
         void CloseBackground()
         {
-            var ctrl = GetController<BackgroundView>();
-            ctrl.Close();
+            //var ctrl = GetController<BackgroundView>();
+            //ctrl.Close();
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace Game.Demo
         {
             var url = GameLauncher.ServerUrl + "api/Match/Match";
             var req = new ReqMatch() { };
-            await context.Facade.GetControllerManager().GetController(nameof(MatchFightController)).Do(context, url, req);
+            //await context.Facade.GetControllerManager().GetController(nameof(MatchFightController)).Do(context, url, req);
         }
 
         private async UniTask OpenCastleUIPanel()
