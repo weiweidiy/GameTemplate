@@ -1,0 +1,76 @@
+﻿using UnityEngine;
+using System;
+
+///游戏可以服用
+namespace JFramework.Unity
+{
+    /// <summary>
+    /// 视图控制器：负责处理视图事件，更新UI状态，和场景状态机解耦，允许在不同的场景状态中复用同一个视图控制器
+    /// 负责视图上的一些逻辑处理，比如UI事件监听，UI状态更新等，和场景状态机解耦，允许在不同的场景状态中复用同一个视图控制器
+    /// 如果是业务上的逻辑，则应该放在场景状态机中，如果是UI上的逻辑，则应该放在视图控制器中
+    /// </summary>
+    public abstract class View 
+    {
+        public string Name => this.GetType().Name;
+
+        protected GameContext context;
+
+        /// <summary>
+        /// 在state onenter中被调用，注册事件监听
+        /// </summary>
+        public virtual void Start(GameContext context)
+        {
+            this.context = context;
+            //Debug.Log("View Start " + this.GetType());
+        }
+
+        public virtual void Stop()
+        {
+            this.context = null;
+        }
+
+        /// <summary>
+        /// 打开视图
+        /// </summary>
+        /// <typeparam name="TArg"></typeparam>
+        /// <param name="args"></param>
+        public abstract void Open<TArg>(TArg args) where TArg : ViewData;
+
+        public abstract void Close();
+
+        public abstract void Refresh<TArg>(TArg args) where TArg : ViewData;
+
+        protected virtual EventManager GetEventManager()
+        {
+            if (context?.Services != null &&
+                context.Services.TryResolve<EventManager>(out var eventManager))
+            {
+                return eventManager;
+            }
+
+            throw new InvalidOperationException("EventManager is not registered in IServiceRegistry.");
+        }
+
+        protected virtual IJUIManager GetUIManager()
+        {
+            if (context?.Services != null &&
+                context.Services.TryResolve<IJUIManager>(out var uiManager))
+            {
+                return uiManager;
+            }
+
+            throw new InvalidOperationException("IJUIManager is not registered in IServiceRegistry.");
+        }
+
+        protected virtual IGameObjectManager GetGameObjectManager()
+        {
+            if (context?.Services != null &&
+                context.Services.TryResolve<IGameObjectManager>(out var gameObjectManager))
+            {
+                return gameObjectManager;
+            }
+
+            throw new InvalidOperationException("IGameObjectManager is not registered in IServiceRegistry.");
+        }
+    }
+}
