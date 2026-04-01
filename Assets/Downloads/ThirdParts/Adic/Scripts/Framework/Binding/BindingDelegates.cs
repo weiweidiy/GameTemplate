@@ -6,7 +6,7 @@ namespace Adic.Binding {
     /// <summary>
     /// Binding condition evaluator handler.
     /// </summary>
-    /// <param name="context">The injection context.</param>
+    /// <param name="context">The injection sceneContext.</param>
 	public delegate bool BindingCondition(InjectionContext context);
 
     /// <summary>

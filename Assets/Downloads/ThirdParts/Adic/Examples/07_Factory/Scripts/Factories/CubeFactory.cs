@@ -39,7 +39,7 @@ namespace Adic.Examples.Factory.Bindings {
         /// <summary>
         /// Creates an instance of the object of the type created by the factory.
         /// </summary>
-        /// <param name="context">Injection context.</param>
+        /// <param name="context">Injection sceneContext.</param>
         /// <returns>The instance.</returns>
         public object Create(InjectionContext context) {
             // Resolve a cube.

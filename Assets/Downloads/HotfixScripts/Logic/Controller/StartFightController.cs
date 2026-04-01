@@ -10,7 +10,7 @@ namespace Game
     {
         public override async Task Do(GameContext context, params object[] parameters)
         {
-            //var httpRequest = context.Facade.GetHttpRequest();
+            //var httpRequest = sceneContext.Facade.GetHttpRequest();
             //ResStartFight fightTask = null;
             //var url = parameters[0] as string;
             //var req = parameters[1] as ReqStartFight;

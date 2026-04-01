@@ -3,7 +3,7 @@ using Adic;
 
 namespace Adic.Examples.Prefabs {
     /// <summary>
-    /// Game context root.
+    /// Game sceneContext root.
     /// </summary>
     public class GameRoot : ContextRoot {
         [Tooltip("Prefab for the cube.")]

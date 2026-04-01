@@ -37,7 +37,7 @@ namespace Game
                 //        //GlobalBoard.Port = port;
                 //        //GlobalBoard.PlayerUid = model.GetAll()[0].Uid;
                 //        //await UniTask.Delay(3000); // 模拟连接服务器的延迟
-                //        //Facade.GetSceneStateMachine().SwitchToState(DemoSceneType.RoomScene.ToString(), Facade.GetGameContext());
+                //        //Facade.GetSceneStateMachine().SwitchToState(GameSceneType.RoomScene.ToString(), Facade.GetGameContext());
                 //    }
                 //    break;
                 default:

@@ -21,6 +21,7 @@ namespace Game
         public override void Close()
         {
             panel.onLoginButtonClicked -= OnLoginButtonClicked;
+            GetUIManager().HidePanel(panel.ScreenId);
         }
 
         public override void Refresh<TArg>(TArg args)

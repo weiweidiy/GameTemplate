@@ -3,9 +3,9 @@ using Adic.Container;
 
 namespace Adic {
     /// <summary>
-    /// Defines the context root.
+    /// Defines the sceneContext root.
     /// 
-    /// A context root is a simple entry point for container creation and game initialization.
+    /// A sceneContext root is a simple entry point for container creation and game initialization.
     /// </summary>
     public interface IContextRoot {
         /// <summary>Contexts list.</summary>

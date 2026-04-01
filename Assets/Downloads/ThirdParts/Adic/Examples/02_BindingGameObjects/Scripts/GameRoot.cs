@@ -3,7 +3,7 @@ using Adic;
 
 namespace Adic.Examples.BindingGameObjects {
     /// <summary>
-    /// Game context root.
+    /// Game sceneContext root.
     /// </summary>
     public class GameRoot : ContextRoot {
         public override void SetupContainers() {

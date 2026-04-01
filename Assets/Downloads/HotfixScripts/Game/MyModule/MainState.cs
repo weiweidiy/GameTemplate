@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Game.MyModule
 {
-    public sealed class MainState : BaseSceneState
+    public sealed class MainState : BaseGameSceneState
     {
         public override UniTask EnterAsync(ISceneContext sceneContext, object arg)
         {
@@ -20,9 +20,9 @@ namespace Game.MyModule
             return "";
         }
 
-        protected override DemoSceneType GetSceneType()
+        protected override GameSceneType GetSceneType()
         {
-            return DemoSceneType.SceneCastle;
+            return GameSceneType.SceneCastle;
         }
         protected override string GetUISettingsName()
         {

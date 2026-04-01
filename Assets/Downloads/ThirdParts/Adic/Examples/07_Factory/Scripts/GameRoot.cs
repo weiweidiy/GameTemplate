@@ -4,7 +4,7 @@ using Adic.Examples.Factory.Commands;
 
 namespace Adic.Examples.Factory {
     /// <summary>
-    /// Game context root.
+    /// Game sceneContext root.
     /// </summary>
     public class GameRoot : ContextRoot {
         /// <summary>The command dispatcher.</summary>

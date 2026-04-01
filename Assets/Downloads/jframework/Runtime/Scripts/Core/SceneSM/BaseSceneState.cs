@@ -82,17 +82,17 @@ namespace JFramework.Unity
         protected  void StartAllVeiwControllers()
         {
             // 启动所有的ViewController
-            var controllers = GetControllers();
-            if(controllers == null || controllers.Length == 0)
+            var views = GetViews();
+            if(views == null || views.Length == 0)
             {
                 Debug.LogWarning("当前场景没有ViewController " + GetSceneType().ToString());
                 return;
             }
 
-            foreach (var controller in controllers)
+            foreach (var view in views)
             {
-                viewControllers.Add(controller);
-                controller.Start(context);
+                viewControllers.Add(view);
+                view.Start(gameContext);
             }
         }
 
@@ -132,10 +132,10 @@ namespace JFramework.Unity
         /// 获取当前状态下所有注册的ViewController，子类可以通过GetController<TView>()方法获取指定类型的ViewController
         /// </summary>
         /// <returns></returns>
-        protected View[] GetControllers()
+        protected View[] GetViews()
         {
-            if (context?.Services != null &&
-                context.Services.TryResolve<IViewRegistry>(out var viewRegistry))
+            if (sceneContext?.Services != null &&
+                sceneContext.Services.TryResolve<IViewRegistry>(out var viewRegistry))
             {
                 var views = viewRegistry.GetViewsForScene(GetType());
                 if (views != null && views.Count > 0)

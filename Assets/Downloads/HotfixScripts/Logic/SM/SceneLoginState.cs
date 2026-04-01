@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public class SceneLoginState : BaseSceneState
+    public class SceneLoginState : BaseGameSceneState
     {
         protected override async UniTask OnEnter(object arg)
         {
@@ -36,9 +36,9 @@ namespace Game
         }
 
 
-        protected override DemoSceneType GetSceneType()
+        protected override GameSceneType GetSceneType()
         {
-            return DemoSceneType.SceneLogin;
+            return GameSceneType.SceneLogin;
         }
         protected override string GetUISettingsName()
         {
@@ -63,7 +63,7 @@ namespace Game
         private void OpenLoginBackground()
         {
             //var ctrl = GetController<LoginBackgroundView>();
-            //var configManager = context.Facade.GetConfigManager();
+            //var configManager = sceneContext.Facade.GetConfigManager();
             //var cfgData = configManager.Get<PrefabsCfgData>("2");
             //var prefabName = cfgData.PrefabName;
             //ctrl.Open(new SingleGameObjectViewData() { prefabName = prefabName, parent = null });
@@ -91,7 +91,7 @@ namespace Game
                 var reqEnter = new ReqEnterGame() { };
                 var socketUrl = GameLauncher.ServerUrl;
 
-                //await context.Facade.GetControllerManager().GetController(nameof(LoginController)).Do(context, url, req, urlEnter, reqEnter, socketUrl);
+                //await sceneContext.Facade.GetControllerManager().GetController(nameof(LoginController)).Do(sceneContext, url, req, urlEnter, reqEnter, socketUrl);
             }
             catch(Exception ex)
             {

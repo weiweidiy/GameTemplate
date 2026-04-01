@@ -17,7 +17,7 @@ namespace Game
         public override void Open<TArg>(TArg args)
         {
             //var data = args as UIPanelCastleViewData;
-            //var configManager = context.Facade.GetConfigManager();
+            //var configManager = sceneContext.Facade.GetConfigManager();
             //cfgData = configManager.Get<TestCfgData>("3");
             //var color = data?.color ?? Color.white;
 

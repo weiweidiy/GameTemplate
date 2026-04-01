@@ -12,5 +12,7 @@ namespace JFramework.Unity
         IReadOnlyList<View> GetViewsForScene<TScene>();
 
         IReadOnlyList<View> GetViewsForScene(Type sceneType);
+
+        TView GetViewForScene<TScene, TView>() where TView : View;
     }
 }

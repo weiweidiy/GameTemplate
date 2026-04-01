@@ -139,8 +139,8 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 	// JFramework.Unity.BaseSMAsync.<>c__DisplayClass5_0<object,int>
 	// JFramework.Unity.BaseSMAsync.SMConfig<object,int>
 	// JFramework.Unity.BaseSMAsync<object,int>
-	// JFramework.Unity.BaseSceneState.<>c__10<int,object>
-	// JFramework.Unity.BaseSceneState<int>
+	// JFramework.Unity.BaseGameSceneState.<>c__10<int,object>
+	// JFramework.Unity.BaseGameSceneState<int>
 	// JFramework.Unity.Model<object>
 	// JFramework.Unity.UIPanelBase<object>
 	// Microsoft.AspNetCore.SignalR.Client.HubConnectionExtensions.<>c__DisplayClass2_0<object>
@@ -692,7 +692,7 @@ public class AOTGenericReferences : UnityEngine.MonoBehaviour
 		// object DG.Tweening.TweenSettingsExtensions.SetDelay<object>(object,float)
 		// System.Void JFramework.Game.JConfigManager.RegisterTable<object,object>(string,JFramework.IDeserializer)
 		// System.Threading.Tasks.Task<object> JFramework.IHttpRequest.HttpRequestAsync<object,object>(string,object,System.Text.Encoding,JFramework.IRunable)
-		// object JFramework.Unity.BaseSceneState<int>.GetController<object>()
+		// object JFramework.Unity.BaseGameSceneState<int>.GetController<object>()
 		// JFramework.Unity.IPanelController JFramework.Unity.IJUIManager.ShowPanel<object>(string,object,bool)
 		// System.Void JFramework.Unity.View.Open<object>(object)
 		// System.IDisposable Microsoft.AspNetCore.SignalR.Client.HubConnectionExtensions.On<object>(Microsoft.AspNetCore.SignalR.Client.HubConnection,string,System.Action<object>)

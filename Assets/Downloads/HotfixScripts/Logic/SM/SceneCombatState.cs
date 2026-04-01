@@ -5,16 +5,16 @@ using UnityEngine.SceneManagement;
 
 namespace Game.Demo
 {
-    public class SceneCombatState : BaseSceneState
+    public class SceneCombatState : BaseGameSceneState
     {
         protected override string GetBGMClipName()
         {
             return "";
         }
 
-        protected override DemoSceneType GetSceneType()
+        protected override GameSceneType GetSceneType()
         {
-            return DemoSceneType.RoomScene;
+            return GameSceneType.RoomScene;
         }
 
         protected override string GetUISettingsName()

@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Game.Demo
 {
-    public class SceneCastleState : BaseSceneState
+    public class SceneCastleState : BaseGameSceneState
     {
         protected override async UniTask OnEnter(object arg)
         {
@@ -31,9 +31,9 @@ namespace Game.Demo
             return "";
         }
 
-        protected override DemoSceneType GetSceneType()
+        protected override GameSceneType GetSceneType()
         {
-            return DemoSceneType.SceneCastle;
+            return GameSceneType.SceneCastle;
         }
 
         protected override string GetUISettingsName()
@@ -48,7 +48,7 @@ namespace Game.Demo
         async UniTask OpenBackground()
         {
             //var ctrl = GetController<BackgroundView>() ;
-            //var assetsQuery = context.Facade.GetGameAssetsQuary() as GameAssetsQuary;
+            //var assetsQuery = sceneContext.Facade.GetGameAssetsQuary() as GameAssetsQuary;
             //var spBackground = await assetsQuery.GetBackgroundSpriteAsync();
 
             //ctrl.Open(new BackgroundViewData()
@@ -91,7 +91,7 @@ namespace Game.Demo
         {
             var url = GameLauncher.ServerUrl + "api/Match/Match";
             var req = new ReqMatch() { };
-            //await context.Facade.GetControllerManager().GetController(nameof(MatchFightController)).Do(context, url, req);
+            //await sceneContext.Facade.GetControllerManager().GetController(nameof(MatchFightController)).Do(sceneContext, url, req);
         }
 
         private async UniTask OpenCastleUIPanel()

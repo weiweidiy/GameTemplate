@@ -3,7 +3,7 @@ using Adic;
 
 namespace Adic.Examples.UsingConditions {
     /// <summary>
-    /// Game context root.
+    /// Game sceneContext root.
     /// </summary>
     public class GameRoot : ContextRoot {
         [Tooltip("On scene right cube.")]

@@ -1,4 +1,5 @@
 ﻿using Cysharp.Threading.Tasks;
+using Game.MyModule;
 using JFramework;
 using JFramework.Unity;
 using System;
@@ -12,8 +13,16 @@ namespace Game
     {
         public override async Task Do(GameContext context, params object[] parameters)
         {
-            //var httpRequest = context.Facade.GetHttpRequest();
-            //var network = context.Facade.GetNetworkManager();
+
+            var provider = context.Services.Resolve<ITransitionProvider>();
+            var transition = await provider.InstantiateAsync(TransitionType.SMFadeTransition.ToString());
+            await transition.TransitionOut();
+            await context.Services.Resolve<ISceneFlow>().EnterAsync<MainState>();
+            await transition.TransitionIn();
+
+
+            //var httpRequest = sceneContext.Facade.GetHttpRequest();
+            //var network = sceneContext.Facade.GetNetworkManager();
             ////todo:这里的accountDTO应该改成requestXXX，responseXXX，
             //AccountDTO loginTask = null;
             //var url = parameters[0] as string;
@@ -25,15 +34,15 @@ namespace Game
             //var socketUrl = parameters[4] as string;
 
             //Debug.Log($"开始登录，URL={url}，Uid={req.Uid}");
-            //var netholdingView = context.Facade.GetViewControllerContainer().GetViewController(nameof(UIPanelNetworkHoldingView)) as UIPanelNetworkHoldingView;
+            //var netholdingView = sceneContext.Facade.GetViewControllerContainer().GetViewController(nameof(UIPanelNetworkHoldingView)) as UIPanelNetworkHoldingView;
             //try
             //{
-                
+
             //    loginTask = await httpRequest.HttpRequestAsync<AccountDTO, AccountDTO>(url, req, null,netholdingView);
             //}
             //catch (Exception e)
             //{
-            //    var view = context.Facade.GetViewControllerContainer().GetViewController(nameof(UIPanelWarningMessageView)) as UIPanelWarningMessageView;
+            //    var view = sceneContext.Facade.GetViewControllerContainer().GetViewController(nameof(UIPanelWarningMessageView)) as UIPanelWarningMessageView;
             //    view.Open(new UIPanelWarningMessageViewData() { prefabName = nameof(UIPanelWarningMessage),  message = $"登录失败，错误信息：{e.Message}" });
             //    Debug.LogError($"登录失败，错误信息：{e.Message}");
             //    (netholdingView as IRunable).Stop();
@@ -45,10 +54,10 @@ namespace Game
 
             //try
             //{
-            //    //var netholdingView = context.Facade.GetViewControllerContainer().GetViewController(nameof(UIPanelNetworkHoldingView)) as UIPanelNetworkHoldingView;
+            //    //var netholdingView = sceneContext.Facade.GetViewControllerContainer().GetViewController(nameof(UIPanelNetworkHoldingView)) as UIPanelNetworkHoldingView;
             //    var enterGame = await httpRequest.HttpRequestAsync<ReqEnterGame, ResEnterGame>(urlEnter, reqEnter ,null, netholdingView);
             //    Debug.Log($"进入游戏成功，SocketUrl={enterGame.PlayerDTO.Username}");
-            //    var model = context.Facade.GetModelManager().GetModel<PlayerModel>();
+            //    var model = sceneContext.Facade.GetModelManager().GetModel<PlayerModel>();
             //    model.Initialize(new List<PlayerDTO>() { enterGame.PlayerDTO });
             //}
             //catch(Exception e)
@@ -74,9 +83,9 @@ namespace Game
 
 
 
-            //var transition = await context.Facade.TransitonOut(TransitionType.SMFadeTransition.ToString());
-            //await context.Facade.GetSceneStateMachine().SwitchToState(DemoSceneType.SceneCastle.ToString(), context).AsTask();
-            //await context.Facade.TransitonIn(transition);
+            //var transition = await sceneContext.Facade.TransitonOut(TransitionType.SMFadeTransition.ToString());
+            //await sceneContext.Facade.GetSceneStateMachine().SwitchToState(GameSceneType.SceneCastle.ToString(), sceneContext).AsTask();
+            //await sceneContext.Facade.TransitonIn(transition);
         }
 
         public void SetToken(IHttpRequest http, string token)

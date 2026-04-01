@@ -11,21 +11,21 @@ namespace Game
         {
 
 
-            //var ntf = await context.Facade.GetNetworkManager().SendMessage<StartFightNtf>(new StartFightNtf()
+            //var ntf = await sceneContext.Facade.GetNetworkManager().SendMessage<StartFightNtf>(new StartFightNtf()
             //{
             //    Uid = "test",
             //    TypeId = (int)ProtocolType.StartFightNtf
             //});
 
 
-            ////await context.Facade.GetNetworkManager().RPCVoid("Ping");
-            //var res = await context.Facade.GetNetworkManager().RPC<BuildingDTO>("TestRPC", new BuildingDTO() { });
+            ////await sceneContext.Facade.GetNetworkManager().RPCVoid("Ping");
+            //var res = await sceneContext.Facade.GetNetworkManager().RPC<BuildingDTO>("TestRPC", new BuildingDTO() { });
 
             //Debug.Log($"res ok building level:" + res.Level);
 
             //Debug.Log($"匹配成功 IP： 端口：{ntf.Port}");
 
-            //var httpRequest = context.Facade.GetHttpRequest();
+            //var httpRequest = sceneContext.Facade.GetHttpRequest();
             //ResMatch matchTask = null;
             //var url = parameters[0] as string;
             //var req = parameters[1] as ReqMatch;

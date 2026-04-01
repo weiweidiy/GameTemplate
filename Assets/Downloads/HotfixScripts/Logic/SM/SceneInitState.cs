@@ -4,7 +4,7 @@ using System;
 
 namespace Game.Demo
 {
-    public class SceneInitState : BaseSceneState
+    public class SceneInitState : BaseGameSceneState
     {
 
 
@@ -22,14 +22,14 @@ namespace Game.Demo
             return "";
         }
 
-        //protected override View[] GetControllers()
+        //protected override View[] GetViews()
         //{
         //    return null;
         //}
 
-        protected override DemoSceneType GetSceneType()
+        protected override GameSceneType GetSceneType()
         {
-            return DemoSceneType.Init;
+            return GameSceneType.Init;
         }
 
         protected override string GetUISettingsName()

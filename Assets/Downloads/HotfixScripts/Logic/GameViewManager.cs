@@ -19,27 +19,27 @@ namespace Game
 
         public override void RegisterViewControllers()
         {
-            if (!viewControllers.ContainsKey(DemoSceneType.SceneLogin.ToString()))
+            if (!viewControllers.ContainsKey(GameSceneType.SceneLogin.ToString()))
             {
-                viewControllers.Add(DemoSceneType.SceneLogin.ToString(), new List<View>());
+                viewControllers.Add(GameSceneType.SceneLogin.ToString(), new List<View>());
             }
 
-            if (!viewControllers.ContainsKey(DemoSceneType.SceneCastle.ToString()))
+            if (!viewControllers.ContainsKey(GameSceneType.SceneCastle.ToString()))
             {
-                viewControllers.Add(DemoSceneType.SceneCastle.ToString(), new List<View>());
+                viewControllers.Add(GameSceneType.SceneCastle.ToString(), new List<View>());
             }
 
 
-            var sceneLoginViews = container.ResolveAll<View>(DemoSceneType.SceneLogin.ToString());
+            var sceneLoginViews = container.ResolveAll<View>(GameSceneType.SceneLogin.ToString());
             foreach (var view in sceneLoginViews)
             {
-                viewControllers[DemoSceneType.SceneLogin.ToString()].Add(view);
+                viewControllers[GameSceneType.SceneLogin.ToString()].Add(view);
             }
 
-            var sceneCastleViews = container.ResolveAll<View>(DemoSceneType.SceneCastle.ToString());
+            var sceneCastleViews = container.ResolveAll<View>(GameSceneType.SceneCastle.ToString());
             foreach (var view in sceneCastleViews)
             {
-                viewControllers[DemoSceneType.SceneCastle.ToString()].Add(view);
+                viewControllers[GameSceneType.SceneCastle.ToString()].Add(view);
             }
 
         }

@@ -13,7 +13,7 @@ namespace Adic.Extensions.ContextRoots.Editors {
     /// </summary>
     [CustomEditor(typeof(ContextRoot), true)]
     public class ContextRootEditor : Editor {
-        /// <summary>Default context root script execution order time.</summary>
+        /// <summary>Default sceneContext root script execution order time.</summary>
         protected const int DEFAULT_EXECUTION_ORDER = -100;
         /// <summary>MonoBehaviour type full qualified name.</summary>
         protected const string MONO_BEHAVIOUR_TYPE = "UnityEngine.MonoBehaviour";

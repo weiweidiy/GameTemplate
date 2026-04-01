@@ -43,7 +43,7 @@ namespace Game
 
                 //                builder.SetAssetsLoader(assetsLoader);
                 //                builder.SetSceneStateMachine(new SceneSM());
-                //                builder.SetFirstSceneState(DemoSceneType.SceneLogin.ToString());
+                //                builder.SetFirstSceneState(GameSceneType.SceneLogin.ToString());
                 //                builder.SetViewControllerContainer(new GameViewManager(container));
                 //                builder.SetModelManager(new GameModelManager());
                 //                builder.SetControllerManager(new GameControllerManager());
@@ -77,14 +77,14 @@ namespace Game
             //container.Bind<GameViewManager>().ToSingleton();
 
             //
-            //container.Bind<View>().ToSingleton<UIPanelLoginView>().As(DemoSceneType.SceneLogin.ToString());
-            //container.Bind<View>().ToSingleton<UIPanelNetworkHoldingView>().As(DemoSceneType.SceneLogin.ToString());
-            //container.Bind<View>().ToSingleton<UIPanelWarningMessageView>().As(DemoSceneType.SceneLogin.ToString());
-            //container.Bind<View>().ToSingleton<LoginBackgroundView>().As(DemoSceneType.SceneLogin.ToString());
+            //container.Bind<View>().ToSingleton<UIPanelLoginView>().As(GameSceneType.SceneLogin.ToString());
+            //container.Bind<View>().ToSingleton<UIPanelNetworkHoldingView>().As(GameSceneType.SceneLogin.ToString());
+            //container.Bind<View>().ToSingleton<UIPanelWarningMessageView>().As(GameSceneType.SceneLogin.ToString());
+            //container.Bind<View>().ToSingleton<LoginBackgroundView>().As(GameSceneType.SceneLogin.ToString());
 
 
-            //container.Bind<View>().ToSingleton<UIPanelCastleView>().As(DemoSceneType.SceneCastle.ToString());
-            //container.Bind<View>().ToSingleton<UIPanelStartMenuView>().As(DemoSceneType.SceneCastle.ToString());
+            //container.Bind<View>().ToSingleton<UIPanelCastleView>().As(GameSceneType.SceneCastle.ToString());
+            //container.Bind<View>().ToSingleton<UIPanelStartMenuView>().As(GameSceneType.SceneCastle.ToString());
 
         }
 

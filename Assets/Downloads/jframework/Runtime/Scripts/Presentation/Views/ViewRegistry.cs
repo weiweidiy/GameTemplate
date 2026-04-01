@@ -61,5 +61,16 @@ namespace JFramework.Unity
 
             return Array.Empty<View>();
         }
+
+        public TView GetViewForScene<TScene, TView>() where TView : View
+        {
+            var views = GetViewsForScene<TScene>();
+            foreach (var view in views)
+            {
+                if (view is TView typedView)
+                    return typedView;
+            }
+            return null;
+        }
     }
 }

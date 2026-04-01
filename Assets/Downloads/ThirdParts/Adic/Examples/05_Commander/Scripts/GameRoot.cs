@@ -4,7 +4,7 @@ using Adic.Examples.Commander.Commands;
 
 namespace Adic.Examples.Commander {
     /// <summary>
-    /// Game context root.
+    /// Game sceneContext root.
     /// </summary>
     public class GameRoot : ContextRoot {
         /// <summary>Rotator command tag.</summary>

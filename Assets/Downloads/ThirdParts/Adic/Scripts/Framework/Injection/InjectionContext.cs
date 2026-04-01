@@ -2,7 +2,7 @@ using System;
 
 namespace Adic.Injection {
     /// <summary>
-    /// Injection context.
+    /// Injection sceneContext.
     /// </summary>
     public class InjectionContext {
         /// <summary>The class member in which the injection is occuring.</summary>
