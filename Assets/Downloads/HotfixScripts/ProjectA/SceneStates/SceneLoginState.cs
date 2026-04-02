@@ -8,7 +8,7 @@ using UnityEngine;
 
 namespace Game
 {
-    public sealed class SceneLoginState : BaseGameSceneState
+    public sealed class SceneLoginState : BaseSceneState
     {
 
         public override async UniTask EnterAsync(ISceneContext context, object arg)
@@ -60,9 +60,9 @@ namespace Game
             return "";
         }
 
-        protected override GameSceneType GetSceneType()
+        protected override string GetSceneName()
         {
-            return GameSceneType.SceneLogin;
+            return "SceneLogin";
         }
         protected override string GetUISettingsName()
         {

@@ -459,7 +459,7 @@ GameObject:
   - component: {fileID: 448458584027047048}
   - component: {fileID: 3236155409382134649}
   - component: {fileID: 2426627205420621903}
-  - component: {fileID: 7271162503312065686}
+  - component: {fileID: 5491868710855461703}
   m_Layer: 0
   m_HasEditorInfo: 1
   m_Name: Button
@@ -526,7 +526,7 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
---- !u!114 &7271162503312065686
+--- !u!114 &5491868710855461703
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -639,7 +639,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   animIn: {fileID: 0}
   animOut: {fileID: 0}
-  btnLogin: {fileID: 7271162503312065686}
+  btnLogin: {fileID: 5491868710855461703}
   inputAccount: {fileID: 469171839956059677}
 --- !u!1 &7576152017762640319
 GameObject:

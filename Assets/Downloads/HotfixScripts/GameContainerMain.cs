@@ -67,8 +67,8 @@ namespace Game
             ServicePointManager.ServerCertificateValidationCallback += (sender, cert, chain, sslPolicyErrors) => true;
 
             app = new JAppBuilder()
-                            .AddModule(new GameFoundationModule())
-                            .AddModule(new GameModules())
+                            .AddModule(new Game.ProjectA.GameFoundationModule())
+                            .AddModule(new Game.ProjectA.GameModules())
                             .Build();
         }
 
