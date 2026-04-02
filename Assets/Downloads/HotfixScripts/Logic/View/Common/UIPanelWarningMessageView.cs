@@ -7,6 +7,8 @@ namespace Game
         public string message;
     }
 
+    [ViewScene(typeof(SceneLoginState))]
+    [ViewScene(typeof(SceneMainState))]
     public class UIPanelWarningMessageView : View
     {
         UIPanelWarningMessage panel;

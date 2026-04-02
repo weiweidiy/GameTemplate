@@ -4,6 +4,8 @@ using JFramework;
 using JFramework.Unity;
 namespace Game
 {
+    [ViewScene(typeof(SceneLoginState))]
+    [ViewScene(typeof(SceneMainState))]
     public class UIPanelNetworkHoldingView : View, IRunable
     {
         UIPanelNetworkHolding panel;

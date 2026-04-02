@@ -5,6 +5,7 @@ using UnityEngine;
 
 namespace Game
 {
+    [ViewScene(typeof(SceneLoginState))]
     public class UIPanelLoginView : View
     {
         public event Action<string> onLoginClicked;

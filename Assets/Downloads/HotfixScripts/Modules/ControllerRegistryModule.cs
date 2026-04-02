@@ -26,6 +26,8 @@ namespace Game.MyModule
             if (!controllers.TryGet<MatchFightController>(out _)) controllers.Register(new MatchFightController());
 
             if (!controllers.TryGet<StartFightController>(out _)) controllers.Register(new StartFightController());
+
+            if (!controllers.TryGet<WorkingController>(out _)) controllers.Register(new WorkingController());
 // </auto-generated-controller-registrations>
         }
     }

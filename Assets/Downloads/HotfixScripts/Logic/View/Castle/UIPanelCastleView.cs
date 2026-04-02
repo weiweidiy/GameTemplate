@@ -9,6 +9,7 @@ namespace Game
         public Color color = Color.red;
     }
 
+    [ViewScene(typeof(SceneMainState))]
     public class UIPanelCastleView : View
     {
         private UIPanelCastle panel;

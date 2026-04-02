@@ -2,7 +2,7 @@ using Cysharp.Threading.Tasks;
 using JFramework.Unity;
 using UnityEngine;
 
-namespace Game.MyModule
+namespace Game
 {
     public sealed class SceneMainState : BaseGameSceneState
     {

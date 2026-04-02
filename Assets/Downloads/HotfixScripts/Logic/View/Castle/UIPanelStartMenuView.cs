@@ -7,7 +7,7 @@ using UnityEngine;
 namespace Game
 {
 
-
+    [ViewScene(typeof(SceneMainState))]
     public class UIPanelStartMenuView : View
     {
         public event Action onStartFightClicked;

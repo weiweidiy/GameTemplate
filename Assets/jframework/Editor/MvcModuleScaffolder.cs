@@ -1,4 +1,3 @@
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -15,6 +14,7 @@ public sealed class MvcModuleScaffolder : EditorWindow
     private const string DefaultModelDir = "Assets/Downloads/HotfixScripts/Logic/Model";
     private const string DefaultViewDir = "Assets/Downloads/HotfixScripts/Logic/View";
     private const string DefaultDtoDir = "Assets/Downloads/HotfixScripts/Logic/DTOs";
+    private const string DefaultSceneStateDir = "Assets/Downloads/HotfixScripts/Logic/SceneState";
 
     private const string ControllerRegistryFile = "Assets/Downloads/HotfixScripts/Modules/ControllerRegistryModule.cs";
     private const string ModelRegistryFile = "Assets/Downloads/HotfixScripts/Modules/ModelRegistryModule.cs";
@@ -42,10 +42,23 @@ public sealed class MvcModuleScaffolder : EditorWindow
     private string modelDirectory = DefaultModelDir;
     private string viewDirectory = DefaultViewDir;
     private string dtoDirectory = DefaultDtoDir;
+    private string sceneStateDirectory = DefaultSceneStateDir;
+
+    private enum ViewScriptType
+    {
+        UI,
+        Mono
+    }
+
+    private ViewScriptType viewScriptType = ViewScriptType.UI;
 
     private readonly Dictionary<string, string> dtoFileMap = new Dictionary<string, string>();
     private string[] dtoOptions = Array.Empty<string>();
     private int selectedDtoIndex = -1;
+
+    private readonly Dictionary<string, string> sceneStateFileMap = new Dictionary<string, string>();
+    private string[] sceneStateOptions = Array.Empty<string>();
+    private bool[] selectedSceneStates = Array.Empty<bool>();
 
     private bool isModelKeyFallbackToUid;
     private string modelKeyHintMessage = string.Empty;
@@ -54,7 +67,8 @@ public sealed class MvcModuleScaffolder : EditorWindow
     private string modelKeyField = "Uid";
 
     private string sceneStateType = "SceneLoginState";
-    private string prefabName = "UIPanelNewFeature";
+    private string prefabName = string.Empty;
+    private bool prefabNameCustomized;
     private bool generateViewData = true;
 
     [MenuItem("JFrameworkTools/业务模块代码生成器")]
@@ -67,7 +81,9 @@ public sealed class MvcModuleScaffolder : EditorWindow
     private void OnEnable()
     {
         RefreshDtoOptions();
+        RefreshSceneStateOptions();
         TryUpdateModelKeyFieldFromDto(dtoType);
+        UpdateDefaultPrefabName(force: true);
     }
 
     private void OnGUI()
@@ -161,6 +177,7 @@ public sealed class MvcModuleScaffolder : EditorWindow
         modelDirectory = DrawPathField("Model目录", modelDirectory);
         viewDirectory = DrawPathField("View目录", viewDirectory);
         dtoDirectory = DrawPathField("DTO目录", dtoDirectory);
+        sceneStateDirectory = DrawPathField("SceneState目录", sceneStateDirectory);
     }
 
     private void DrawModelOptions()
@@ -212,9 +229,76 @@ public sealed class MvcModuleScaffolder : EditorWindow
     private void DrawViewOptions()
     {
         EditorGUILayout.LabelField("View 配置", EditorStyles.boldLabel);
-        sceneStateType = EditorGUILayout.TextField("注册场景State", sceneStateType);
-        prefabName = EditorGUILayout.TextField("默认Prefab名", prefabName);
-        generateViewData = EditorGUILayout.ToggleLeft("生成独立 ViewData 类型", generateViewData);
+
+        var previousViewScriptType = viewScriptType;
+        viewScriptType = (ViewScriptType)EditorGUILayout.EnumPopup("View类型", viewScriptType);
+        if (previousViewScriptType != viewScriptType)
+        {
+            UpdateDefaultPrefabName(force: !prefabNameCustomized);
+        }
+
+        UpdateDefaultPrefabName(force: false);
+
+        RefreshSceneStateOptions();
+
+        EditorGUILayout.LabelField("注册场景State");
+        if (sceneStateOptions.Length == 0)
+        {
+            EditorGUILayout.HelpBox("SceneState目录下未扫描到任何 *State.cs 文件。", MessageType.Warning);
+        }
+        else
+        {
+            using (new EditorGUI.IndentLevelScope())
+            {
+                for (var i = 0; i < sceneStateOptions.Length; i++)
+                {
+                    selectedSceneStates[i] = EditorGUILayout.ToggleLeft(sceneStateOptions[i], selectedSceneStates[i]);
+                }
+            }
+        }
+
+        if (viewScriptType == ViewScriptType.UI)
+        {
+            var newPrefabName = EditorGUILayout.TextField("默认Prefab名", prefabName);
+            if (!string.Equals(newPrefabName, prefabName, StringComparison.Ordinal))
+            {
+                prefabNameCustomized = true;
+                prefabName = newPrefabName;
+            }
+
+            generateViewData = EditorGUILayout.ToggleLeft("生成独立 ViewData 类型", generateViewData);
+        }
+        else
+        {
+            EditorGUILayout.LabelField("默认组件名", prefabName);
+            generateViewData = EditorGUILayout.ToggleLeft("生成独立 ViewData 类型", generateViewData);
+        }
+    }
+
+    private void UpdateDefaultPrefabName(bool force)
+    {
+        if (!force && prefabNameCustomized)
+            return;
+
+        var sanitizedViewName = SanitizeIdentifier(viewName);
+        if (string.IsNullOrWhiteSpace(sanitizedViewName))
+        {
+            prefabName = viewScriptType == ViewScriptType.UI
+                ? "UIPanelNewFeature"
+                : "NewFeature";
+            return;
+        }
+
+        if (viewScriptType == ViewScriptType.UI)
+        {
+            prefabName = sanitizedViewName.StartsWith("UIPanel", StringComparison.Ordinal)
+                ? sanitizedViewName
+                : "UIPanel" + sanitizedViewName;
+        }
+        else
+        {
+            prefabName = sanitizedViewName;
+        }
     }
 
     private string DrawPathField(string label, string currentValue)
@@ -289,6 +373,71 @@ public sealed class MvcModuleScaffolder : EditorWindow
         }
 
         TryUpdateModelKeyFieldFromDto(dtoType);
+    }
+
+    private void RefreshSceneStateOptions()
+    {
+        var sceneStateAbsolutePath = ToAbsolutePath(sceneStateDirectory);
+        if (!Directory.Exists(sceneStateAbsolutePath))
+        {
+            sceneStateOptions = Array.Empty<string>();
+            selectedSceneStates = Array.Empty<bool>();
+            sceneStateFileMap.Clear();
+            return;
+        }
+
+        sceneStateFileMap.Clear();
+
+        var sceneStateFiles = Directory.GetFiles(sceneStateAbsolutePath, "*State.cs", SearchOption.AllDirectories)
+            .OrderBy(x => x)
+            .ToArray();
+
+        foreach (var file in sceneStateFiles)
+        {
+            var stateName = Path.GetFileNameWithoutExtension(file);
+            if (!sceneStateFileMap.ContainsKey(stateName))
+                sceneStateFileMap.Add(stateName, file);
+        }
+
+        var oldOptions = sceneStateOptions;
+        var oldSelected = selectedSceneStates;
+
+        sceneStateOptions = sceneStateFileMap.Keys
+            .OrderBy(x => x)
+            .ToArray();
+
+        selectedSceneStates = new bool[sceneStateOptions.Length];
+
+        for (var i = 0; i < sceneStateOptions.Length; i++)
+        {
+            var oldIndex = Array.IndexOf(oldOptions, sceneStateOptions[i]);
+            if (oldIndex >= 0 && oldIndex < oldSelected.Length)
+                selectedSceneStates[i] = oldSelected[oldIndex];
+        }
+
+        if (sceneStateOptions.Length > 0 && !selectedSceneStates.Any(x => x))
+        {
+            var defaultIndex = Array.IndexOf(sceneStateOptions, sceneStateType);
+            if (defaultIndex >= 0)
+                selectedSceneStates[defaultIndex] = true;
+            else
+                selectedSceneStates[0] = true;
+        }
+    }
+
+    private string[] GetSelectedSceneStates()
+    {
+        if (sceneStateOptions == null || selectedSceneStates == null)
+            return Array.Empty<string>();
+
+        var result = new List<string>();
+        for (var i = 0; i < sceneStateOptions.Length && i < selectedSceneStates.Length; i++)
+        {
+            if (selectedSceneStates[i])
+                result.Add(sceneStateOptions[i]);
+        }
+
+        return result.ToArray();
     }
 
     private void TryUpdateModelKeyFieldFromDto(string dtoName)
@@ -371,10 +520,22 @@ public sealed class MvcModuleScaffolder : EditorWindow
                 }
             }
 
-            SyncAllRegistrySections();
-
             AssetDatabase.Refresh();
-            EditorUtility.DisplayDialog("完成", $"已生成并自动注册：\n{messageBuilder}", "确定");
+
+            EditorApplication.delayCall += () =>
+            {
+                try
+                {
+                    SyncAllRegistrySections();
+                    AssetDatabase.Refresh();
+                    EditorUtility.DisplayDialog("完成", $"已生成并自动注册：\n{messageBuilder}", "确定");
+                }
+                catch (Exception exception)
+                {
+                    Debug.LogException(exception);
+                    EditorUtility.DisplayDialog("注册失败", exception.Message, "确定");
+                }
+            };
         }
         catch (Exception exception)
         {
@@ -406,14 +567,14 @@ public sealed class MvcModuleScaffolder : EditorWindow
 
         ReplaceAutoGeneratedSection(ModelRegistryFile, ModelStartMarker, ModelEndMarker, modelRegisterLines);
 
-        var viewFiles = Directory.GetFiles(ToAbsolutePath(viewDirectory), "*View.cs", SearchOption.AllDirectories);
-        var viewClassNames = viewFiles
-            .Select(Path.GetFileNameWithoutExtension)
-            .Where(name => !name.EndsWith("ViewData", StringComparison.Ordinal))
-            .Distinct()
-            .OrderBy(x => x);
-        var viewRegisterLines = viewClassNames.Select(name =>
-            $"            views.RegisterForScene(typeof({sceneStateType}), new {name}());");
+        var viewFiles = Directory.GetFiles(ToAbsolutePath(viewDirectory), "*View.cs", SearchOption.AllDirectories)
+            .OrderBy(x => x)
+            .ToArray();
+
+        var viewRegisterLines = viewFiles
+            .Where(x => !Path.GetFileNameWithoutExtension(x).EndsWith("ViewData", StringComparison.Ordinal))
+            .SelectMany(BuildViewRegisterLinesFromFile);
+
         ReplaceAutoGeneratedSection(ViewRegistryFile, ViewStartMarker, ViewEndMarker, viewRegisterLines);
     }
 
@@ -426,6 +587,33 @@ public sealed class MvcModuleScaffolder : EditorWindow
         var keyFieldName = GetModelKeyFieldByDtoName(dtoTypeName);
 
         return $"            if (!models.TryGet<{modelClassName}>(out _)) models.Register(new {modelClassName}(((dto) => dto.{keyFieldName}), eventManager));";
+    }
+
+    private IEnumerable<string> BuildViewRegisterLinesFromFile(string viewFilePath)
+    {
+        var viewClassName = Path.GetFileNameWithoutExtension(viewFilePath);
+        var content = File.ReadAllText(viewFilePath);
+
+        var matches = Regex.Matches(
+            content,
+            @"\[ViewScene\s*\(\s*typeof\s*\(\s*(?<state>\w+)\s*\)\s*\)\]");
+
+        var states = matches.Cast<Match>()
+            .Select(x => x.Groups["state"].Value)
+            .Where(x => !string.IsNullOrWhiteSpace(x))
+            .Distinct()
+            .ToArray();
+
+        if (states.Length == 0)
+            yield break;
+
+        var variableName = $"view_{viewClassName}";
+        yield return $"            var {variableName} = new {viewClassName}();";
+
+        foreach (var state in states)
+        {
+            yield return $"            views.RegisterForScene(typeof({state}), {variableName});";
+        }
     }
 
     private static string ExtractDtoTypeFromModel(string modelFileContent)
@@ -555,6 +743,11 @@ namespace {namespaceName}
         var featureViewDirectory = Path.Combine(viewDirectory, sanitizedViewName);
         EnsureDirectoryExists(featureViewDirectory);
 
+        var selectedStates = GetSelectedSceneStates();
+        if (selectedStates.Length == 0)
+            throw new InvalidOperationException("请至少选择一个注册场景State。");
+        var sceneAttributes = string.Join(Environment.NewLine, selectedStates.Select(x => $"    [ViewScene(typeof({x}))]"));
+
         var panelClassName = prefabName;
         var propertiesClassName = $"{panelClassName}Properties";
         var viewClassName = sanitizedViewName.EndsWith("View", StringComparison.Ordinal)
@@ -562,13 +755,16 @@ namespace {namespaceName}
             : sanitizedViewName + "View";
         var viewDataClassName = $"{viewClassName}Data";
 
-        var panelFilePath = Path.Combine(featureViewDirectory, $"{panelClassName}.cs");
         var viewFilePath = Path.Combine(featureViewDirectory, $"{viewClassName}.cs");
 
-        EnsureFileNotExists(panelFilePath);
-        EnsureFileNotExists(viewFilePath);
+        if (viewScriptType == ViewScriptType.UI)
+        {
+            var panelFilePath = Path.Combine(featureViewDirectory, $"{panelClassName}.cs");
 
-        var panelContent = $@"using deVoid.UIFramework;
+            EnsureFileNotExists(panelFilePath);
+            EnsureFileNotExists(viewFilePath);
+
+            var panelContent = $@"using deVoid.UIFramework;
 using JFramework.Unity;
 
 namespace {namespaceName}
@@ -592,20 +788,20 @@ namespace {namespaceName}
 }}
 ";
 
-        var viewDataBlock = generateViewData
-            ? $@"    public class {viewDataClassName} : ViewData
+            var viewDataBlock = generateViewData
+                ? $@"    public class {viewDataClassName} : ViewData
     {{
     }}
 
 "
-            : string.Empty;
+                : string.Empty;
 
-        var openArgType = generateViewData ? viewDataClassName : "ViewData";
-        var viewContent = $@"using JFramework.Unity;
+            var openArgType = generateViewData ? viewDataClassName : "ViewData";
+            var viewContent = $@"using JFramework.Unity;
 
 namespace {namespaceName}
 {{
-    // [ViewScene({sceneStateType})]
+{sceneAttributes}
 {viewDataBlock}    public class {viewClassName} : View
     {{
         private {panelClassName} panel;
@@ -632,10 +828,66 @@ namespace {namespaceName}
 }}
 ";
 
-        File.WriteAllText(ToAbsolutePath(panelFilePath), panelContent, new UTF8Encoding(false));
-        File.WriteAllText(ToAbsolutePath(viewFilePath), viewContent, new UTF8Encoding(false));
+            File.WriteAllText(ToAbsolutePath(panelFilePath), panelContent, new UTF8Encoding(false));
+            File.WriteAllText(ToAbsolutePath(viewFilePath), viewContent, new UTF8Encoding(false));
 
-        return new[] { panelFilePath, viewFilePath };
+            return new[] { panelFilePath, viewFilePath };
+        }
+        else
+        {
+            var componentClassName = sanitizedViewName.EndsWith("Component", StringComparison.Ordinal)
+                ? sanitizedViewName
+                : sanitizedViewName + "Component";
+            var componentFilePath = Path.Combine(featureViewDirectory, $"{componentClassName}.cs");
+
+            EnsureFileNotExists(viewFilePath);
+            EnsureFileNotExists(componentFilePath);
+
+            var viewDataBlock = generateViewData
+                ? $@"    public class {viewDataClassName} : ViewData
+    {{
+    }}
+
+"
+                : string.Empty;
+
+            var viewContent = $@"using JFramework.Unity;
+
+namespace {namespaceName}
+{{
+{sceneAttributes}
+{viewDataBlock}    public class {viewClassName} : View
+    {{
+        public override void Open<TArg>(TArg args)
+        {{
+        }}
+
+        public override void Close()
+        {{
+        }}
+
+        public override void Refresh<TArg>(TArg args)
+        {{
+        }}
+    }}
+}}
+";
+
+            var componentContent = $@"using UnityEngine;
+
+namespace {namespaceName}
+{{
+    public class {componentClassName} : MonoBehaviour
+    {{
+    }}
+}}
+";
+
+            File.WriteAllText(ToAbsolutePath(viewFilePath), viewContent, new UTF8Encoding(false));
+            File.WriteAllText(ToAbsolutePath(componentFilePath), componentContent, new UTF8Encoding(false));
+
+            return new[] { viewFilePath, componentFilePath };
+        }
     }
 
     private static string SanitizeIdentifier(string rawValue)
@@ -694,665 +946,3 @@ namespace {namespaceName}
         return Path.GetFullPath(Path.Combine(projectRoot, assetRelativePath));
     }
 }
-//using System;
-//using System.Collections.Generic;
-//using System.IO;
-//using System.Linq;
-//using System.Text;
-//using System.Text.RegularExpressions;
-//using UnityEditor;
-//using UnityEngine;
-
-//public sealed class MvcModuleScaffolder : EditorWindow
-//{
-//    private const string DefaultNamespace = "Game";
-//    private const string DefaultControllerDir = "Assets/Downloads/HotfixScripts/Logic/Controller";
-//    private const string DefaultModelDir = "Assets/Downloads/HotfixScripts/Logic/Model";
-//    private const string DefaultViewDir = "Assets/Downloads/HotfixScripts/Logic/View";
-//    private const string ControllerRegistryFile = "Assets/Downloads/HotfixScripts/Modules/ControllerRegistryModule.cs";
-//    private const string ModelRegistryFile = "Assets/Downloads/HotfixScripts/Modules/ModelRegistryModule.cs";
-//    private const string ViewRegistryFile = "Assets/Downloads/HotfixScripts/Modules/ViewRegistryModule.cs";
-
-//    private const string ControllerStartMarker = "// <auto-generated-controller-registrations>";
-//    private const string ControllerEndMarker = "// </auto-generated-controller-registrations>";
-//    private const string ModelStartMarker = "// <auto-generated-model-registrations>";
-//    private const string ModelEndMarker = "// </auto-generated-model-registrations>";
-//    private const string ViewStartMarker = "// <auto-generated-view-registrations>";
-//    private const string ViewEndMarker = "// </auto-generated-view-registrations>";
-
-//    private Vector2 scrollPosition;
-//    private string namespaceName = DefaultNamespace;
-//    private string featureName = string.Empty;
-//    private string controllerName = string.Empty;
-//    private string modelName = string.Empty;
-//    private string viewName = string.Empty;
-
-//    private bool createController = true;
-//    private bool createModel = true;
-//    private bool createView = true;
-
-//    private string controllerDirectory = DefaultControllerDir;
-//    private string modelDirectory = DefaultModelDir;
-//    private string viewDirectory = DefaultViewDir;
-
-//    private const string DefaultDtoDir = "Assets/Downloads/HotfixScripts/Logic/DTOs";
-//    private readonly Dictionary<string, string> dtoFileMap = new Dictionary<string, string>();
-//    private string dtoDirectory = DefaultDtoDir;
-//    private string[] dtoOptions = Array.Empty<string>();
-//    private int selectedDtoIndex = -1;
-//    private bool isModelKeyFallbackToUid;
-//    private string modelKeyHintMessage = string.Empty;
-
-//    private string dtoType = "default";
-//    private string modelKeyField = "Uid";
-
-//    private string sceneStateType = "SceneLoginState";
-//    private string prefabName = "UIPanelNewFeature";
-//    private bool generateViewData = true;
-
-//    [MenuItem("JFrameworkTools/业务模块代码生成器")]
-//    public static void ShowWindow()
-//    {
-//        var window = GetWindow<MvcModuleScaffolder>("MVC代码生成器");
-//        window.minSize = new Vector2(640f, 560f);
-//    }
-//    private void OnEnable()
-//    {
-//        RefreshDtoOptions();
-//        TryUpdateModelKeyFieldFromDto(dtoType);
-//    }
-
-//    private void OnGUI()
-//    {
-//        scrollPosition = EditorGUILayout.BeginScrollView(scrollPosition);
-
-//        EditorGUILayout.LabelField("MVC 模块脚手架", EditorStyles.boldLabel);
-//        EditorGUILayout.HelpBox("生成 Controller / Model / View 模板，并自动更新三个 RegistryModule 注册段。", MessageType.Info);
-
-//        namespaceName = EditorGUILayout.TextField("命名空间", namespaceName);
-//        featureName = EditorGUILayout.TextField("功能名", featureName);
-
-//        EditorGUILayout.Space(8f);
-//        DrawCreateOptions();
-
-//        EditorGUILayout.Space(8f);
-//        DrawPathOptions();
-
-//        if (createModel)
-//        {
-//            EditorGUILayout.Space(8f);
-//            DrawModelOptions();
-//        }
-
-//        if (createView)
-//        {
-//            EditorGUILayout.Space(8f);
-//            DrawViewOptions();
-//        }
-
-//        EditorGUILayout.Space(16f);
-//        using (new EditorGUI.DisabledScope(string.IsNullOrWhiteSpace(featureName)))
-//        {
-//            if (GUILayout.Button("生成并自动注册", GUILayout.Height(36f)))
-//            {
-//                Generate();
-//            }
-//        }
-
-//        EditorGUILayout.Space(8f);
-//        if (GUILayout.Button("仅刷新注册类", GUILayout.Height(28f)))
-//        {
-//            SyncAllRegistrySections();
-//            AssetDatabase.Refresh();
-//            EditorUtility.DisplayDialog("完成", "注册类已刷新。", "确定");
-//        }
-
-//        EditorGUILayout.EndScrollView();
-//    }
-
-//    private void DrawCreateOptions()
-//    {
-//        EditorGUILayout.LabelField("生成内容", EditorStyles.boldLabel);
-//        createController = EditorGUILayout.ToggleLeft("Controller", createController);
-//        createModel = EditorGUILayout.ToggleLeft("Model", createModel);
-//        createView = EditorGUILayout.ToggleLeft("View（含 Panel + ViewData）", createView);
-//    }
-
-//    private void DrawPathOptions()
-//    {
-//        EditorGUILayout.LabelField("输出目录", EditorStyles.boldLabel);
-//        controllerDirectory = DrawPathField("Controller目录", controllerDirectory);
-//        modelDirectory = DrawPathField("Model目录", modelDirectory);
-//        viewDirectory = DrawPathField("View目录", viewDirectory);
-//        dtoDirectory = DrawPathField("DTO目录", dtoDirectory);
-//    }
-
-//    private void DrawModelOptions()
-//    {
-//        EditorGUILayout.LabelField("Model 配置", EditorStyles.boldLabel);
-
-//        RefreshDtoOptions();
-
-//        if (dtoOptions.Length > 0)
-//        {
-//            if (selectedDtoIndex < 0 || selectedDtoIndex >= dtoOptions.Length)
-//            {
-//                selectedDtoIndex = Array.IndexOf(dtoOptions, dtoType);
-//                if (selectedDtoIndex < 0)
-//                    selectedDtoIndex = 0;
-//            }
-
-//            var newIndex = EditorGUILayout.Popup("DTO类型", selectedDtoIndex, dtoOptions);
-//            if (newIndex != selectedDtoIndex)
-//            {
-//                selectedDtoIndex = newIndex;
-//                dtoType = dtoOptions[selectedDtoIndex];
-//                TryUpdateModelKeyFieldFromDto(dtoType);
-//            }
-//            else if (dtoOptions[selectedDtoIndex] != dtoType)
-//            {
-//                dtoType = dtoOptions[selectedDtoIndex];
-//                TryUpdateModelKeyFieldFromDto(dtoType);
-//            }
-//        }
-//        else
-//        {
-//            EditorGUILayout.HelpBox("DTO目录下未扫描到任何 *DTO.cs 文件，将使用手动输入。", MessageType.Warning);
-//            dtoType = EditorGUILayout.TextField("DTO类型", dtoType);
-//        }
-
-//        using (new EditorGUI.DisabledScope(true))
-//        {
-//            EditorGUILayout.TextField("Key字段", modelKeyField);
-//        }
-
-//        if (isModelKeyFallbackToUid)
-//        {
-//            EditorGUILayout.HelpBox(modelKeyHintMessage, MessageType.Warning);
-//        }
-//    }
-
-//    private void RefreshDtoOptions()
-//    {
-//        var dtoAbsolutePath = ToAbsolutePath(dtoDirectory);
-//        if (!Directory.Exists(dtoAbsolutePath))
-//        {
-//            dtoOptions = Array.Empty<string>();
-//            dtoFileMap.Clear();
-//            selectedDtoIndex = -1;
-//            return;
-//        }
-
-//        dtoFileMap.Clear();
-
-//        var dtoFiles = Directory.GetFiles(dtoAbsolutePath, "*DTO.cs", SearchOption.AllDirectories)
-//            .OrderBy(x => x)
-//            .ToArray();
-
-//        foreach (var file in dtoFiles)
-//        {
-//            var dtoName = Path.GetFileNameWithoutExtension(file);
-//            if (!dtoFileMap.ContainsKey(dtoName))
-//                dtoFileMap.Add(dtoName, file);
-//        }
-
-//        dtoOptions = dtoFileMap.Keys
-//            .OrderBy(x => x)
-//            .ToArray();
-
-//        if (dtoOptions.Length == 0)
-//        {
-//            selectedDtoIndex = -1;
-//            return;
-//        }
-
-//        if (string.IsNullOrWhiteSpace(dtoType))
-//        {
-//            selectedDtoIndex = 0;
-//            dtoType = dtoOptions[0];
-//            TryUpdateModelKeyFieldFromDto(dtoType);
-//            return;
-//        }
-
-//        var index = Array.IndexOf(dtoOptions, dtoType);
-//        if (index >= 0)
-//        {
-//            selectedDtoIndex = index;
-//        }
-//        else
-//        {
-//            selectedDtoIndex = 0;
-//            dtoType = dtoOptions[0];
-//        }
-
-//        TryUpdateModelKeyFieldFromDto(dtoType);
-//    }
-
-//    private void TryUpdateModelKeyFieldFromDto(string dtoName)
-//    {
-//        isModelKeyFallbackToUid = false;
-//        modelKeyHintMessage = string.Empty;
-
-//        if (string.IsNullOrWhiteSpace(dtoName))
-//        {
-//            modelKeyField = "Uid";
-//            isModelKeyFallbackToUid = true;
-//            modelKeyHintMessage = "未选择有效DTO，Key字段已默认使用 Uid。";
-//            return;
-//        }
-
-//        if (!dtoFileMap.TryGetValue(dtoName, out var filePath) || !File.Exists(filePath))
-//        {
-//            modelKeyField = "Uid";
-//            isModelKeyFallbackToUid = true;
-//            modelKeyHintMessage = $"未找到 DTO 文件：{dtoName}，Key字段已默认使用 Uid。";
-//            return;
-//        }
-
-//        var content = File.ReadAllText(filePath);
-
-//        var propertyMatch = Regex.Match(
-//            content,
-//            @"\[ModelKey(?:Attribute)?\]\s*(?:\r?\n\s*)*(?:public|private|protected|internal)\s+[^\s]+\s+(?<name>\w+)\s*\{",
-//            RegexOptions.Multiline);
-
-//        if (propertyMatch.Success)
-//        {
-//            modelKeyField = propertyMatch.Groups["name"].Value;
-//            return;
-//        }
-
-//        var fieldMatch = Regex.Match(
-//            content,
-//            @"\[ModelKey(?:Attribute)?\]\s*(?:\r?\n\s*)*(?:public|private|protected|internal)\s+[^\s]+\s+(?<name>\w+)\s*;",
-//            RegexOptions.Multiline);
-
-//        if (fieldMatch.Success)
-//        {
-//            modelKeyField = fieldMatch.Groups["name"].Value;
-//            return;
-//        }
-
-//        modelKeyField = "Uid";
-//        isModelKeyFallbackToUid = true;
-//        modelKeyHintMessage = $"DTO {dtoName} 中未找到 [ModelKey] 标记，Key字段已默认使用 Uid。";
-//    }
-
-//    private void DrawViewOptions()
-//    {
-//        EditorGUILayout.LabelField("View 配置", EditorStyles.boldLabel);
-//        sceneStateType = EditorGUILayout.TextField("注册场景State", sceneStateType);
-//        prefabName = EditorGUILayout.TextField("默认Prefab名", prefabName);
-//        generateViewData = EditorGUILayout.ToggleLeft("生成独立 ViewData 类型", generateViewData);
-//    }
-
-//    private string DrawPathField(string label, string currentValue)
-//    {
-//        using (new EditorGUILayout.HorizontalScope())
-//        {
-//            currentValue = EditorGUILayout.TextField(label, currentValue);
-//            if (GUILayout.Button("选择", GUILayout.Width(60f)))
-//            {
-//                var selectedPath = EditorUtility.OpenFolderPanel("选择目录", Application.dataPath, string.Empty);
-//                if (!string.IsNullOrWhiteSpace(selectedPath))
-//                {
-//                    currentValue = ToAssetRelativePath(selectedPath);
-//                }
-//            }
-//        }
-
-//        return currentValue;
-//    }
-
-//    private void Generate()
-//    {
-//        if (!createController && !createModel && !createView)
-//        {
-//            EditorUtility.DisplayDialog("提示", "请至少勾选一个要生成的类型。", "确定");
-//            return;
-//        }
-
-//        var sanitizedFeatureName = SanitizeIdentifier(featureName);
-//        if (string.IsNullOrWhiteSpace(sanitizedFeatureName))
-//        {
-//            EditorUtility.DisplayDialog("错误", "功能名必须是合法的 C# 标识符。", "确定");
-//            return;
-//        }
-
-//        try
-//        {
-//            var messageBuilder = new StringBuilder();
-
-//            if (createController)
-//            {
-//                var controllerPath = CreateControllerFile(sanitizedFeatureName);
-//                messageBuilder.AppendLine(controllerPath);
-//            }
-
-//            if (createModel)
-//            {
-//                var modelPath = CreateModelFile(sanitizedFeatureName);
-//                messageBuilder.AppendLine(modelPath);
-//            }
-
-//            if (createView)
-//            {
-//                foreach (var filePath in CreateViewFiles(sanitizedFeatureName))
-//                {
-//                    messageBuilder.AppendLine(filePath);
-//                }
-//            }
-
-//            // 自动同步注册段
-//            SyncAllRegistrySections();
-
-//            AssetDatabase.Refresh();
-//            EditorUtility.DisplayDialog("完成", $"已生成并自动注册：\n{messageBuilder}", "确定");
-//        }
-//        catch (Exception exception)
-//        {
-//            Debug.LogException(exception);
-//            EditorUtility.DisplayDialog("生成失败", exception.Message, "确定");
-//        }
-//    }
-
-//    private void SyncAllRegistrySections()
-//    {
-//        var controllerFiles = Directory.GetFiles(ToAbsolutePath(controllerDirectory), "*Controller.cs", SearchOption.AllDirectories);
-//        var controllerClassNames = controllerFiles
-//            .Select(Path.GetFileNameWithoutExtension)
-//            .Distinct()
-//            .OrderBy(x => x);
-//        var controllerRegisterLines = controllerClassNames.Select(name =>
-//            $"            if (!controllers.TryGet<{name}>(out _)) controllers.Register(new {name}());");
-//        ReplaceAutoGeneratedSection(ControllerRegistryFile, ControllerStartMarker, ControllerEndMarker, controllerRegisterLines);
-
-//        RefreshDtoOptions();
-
-//        var modelFiles = Directory.GetFiles(ToAbsolutePath(modelDirectory), "*Model.cs", SearchOption.AllDirectories)
-//            .OrderBy(x => x)
-//            .ToArray();
-
-//        var modelRegisterLines = modelFiles
-//            .Select(BuildModelRegisterLine)
-//            .Where(x => !string.IsNullOrWhiteSpace(x));
-
-//        ReplaceAutoGeneratedSection(ModelRegistryFile, ModelStartMarker, ModelEndMarker, modelRegisterLines);
-
-//        var viewFiles = Directory.GetFiles(ToAbsolutePath(viewDirectory), "*View.cs", SearchOption.AllDirectories);
-//        var viewClassNames = viewFiles
-//            .Select(Path.GetFileNameWithoutExtension)
-//            .Where(name => !name.EndsWith("ViewData", StringComparison.Ordinal))
-//            .Distinct()
-//            .OrderBy(x => x);
-//        var viewRegisterLines = viewClassNames.Select(name =>
-//            $"            views.RegisterForScene(typeof({sceneStateType}), new {name}());");
-//        ReplaceAutoGeneratedSection(ViewRegistryFile, ViewStartMarker, ViewEndMarker, viewRegisterLines);
-//    }
-
-//    private string BuildModelRegisterLine(string modelFilePath)
-//    {
-//        var modelClassName = Path.GetFileNameWithoutExtension(modelFilePath);
-//        var content = File.ReadAllText(modelFilePath);
-
-//        var dtoTypeName = ExtractDtoTypeFromModel(content);
-//        var keyFieldName = GetModelKeyFieldByDtoName(dtoTypeName);
-
-//        return $"            if (!models.TryGet<{modelClassName}>(out _)) models.Register(new {modelClassName}(((dto) => dto.{keyFieldName}), eventManager));";
-//    }
-
-//    private static string ExtractDtoTypeFromModel(string modelFileContent)
-//    {
-//        var match = Regex.Match(
-//            modelFileContent,
-//            @"class\s+\w+\s*:\s*Model<(?<dto>\w+)>",
-//            RegexOptions.Multiline);
-
-//        if (match.Success)
-//            return match.Groups["dto"].Value;
-
-//        return string.Empty;
-//    }
-
-//    private string GetModelKeyFieldByDtoName(string dtoName)
-//    {
-//        if (string.IsNullOrWhiteSpace(dtoName))
-//            return "Uid";
-
-//        if (!dtoFileMap.TryGetValue(dtoName, out var filePath))
-//            return "Uid";
-
-//        if (!File.Exists(filePath))
-//            return "Uid";
-
-//        var content = File.ReadAllText(filePath);
-
-//        var propertyMatch = Regex.Match(
-//            content,
-//            @"\[ModelKey(?:Attribute)?\]\s*(?:\r?\n\s*)*(?:public|private|protected|internal)\s+[^\s]+\s+(?<name>\w+)\s*\{",
-//            RegexOptions.Multiline);
-
-//        if (propertyMatch.Success)
-//            return propertyMatch.Groups["name"].Value;
-
-//        var fieldMatch = Regex.Match(
-//            content,
-//            @"\[ModelKey(?:Attribute)?\]\s*(?:\r?\n\s*)*(?:public|private|protected|internal)\s+[^\s]+\s+(?<name>\w+)\s*;",
-//            RegexOptions.Multiline);
-
-//        if (fieldMatch.Success)
-//            return fieldMatch.Groups["name"].Value;
-
-//        return "Uid";
-//    }
-//    private static void ReplaceAutoGeneratedSection(string assetRelativeFilePath, string startMarker, string endMarker, IEnumerable<string> lines)
-//    {
-//        var absolutePath = ToAbsolutePath(assetRelativeFilePath);
-//        var content = File.ReadAllText(absolutePath);
-
-//        var pattern = $"{Regex.Escape(startMarker)}(?<body>[\\s\\S]*?){Regex.Escape(endMarker)}";
-//        var match = Regex.Match(content, pattern);
-//        if (!match.Success)
-//            throw new InvalidOperationException($"未在 {assetRelativeFilePath} 中找到自动生成标记段。");
-
-//        var body = string.Join(Environment.NewLine + Environment.NewLine, lines);
-//        var replacement = $"{startMarker}{Environment.NewLine}{body}{Environment.NewLine}{endMarker}";
-//        content = Regex.Replace(content, pattern, m => replacement);
-
-//        File.WriteAllText(absolutePath, content, new UTF8Encoding(false));
-//    }
-
-//    private string CreateControllerFile(string sanitizedFeatureName)
-//    {
-//        EnsureDirectoryExists(controllerDirectory);
-
-//        var className = $"{sanitizedFeatureName}Controller";
-//        var filePath = Path.Combine(controllerDirectory, $"{className}.cs");
-//        EnsureFileNotExists(filePath);
-
-//        var content = $@"using System.Threading.Tasks;
-//using JFramework.Unity;
-
-//namespace {namespaceName}
-//{{
-//    public class {className} : Controller
-//    {{
-//        public override Task Do(GameContext context, params object[] parameters)
-//        {{
-//            return Task.CompletedTask;
-//        }}
-//    }}
-//}}
-//";
-
-//        File.WriteAllText(ToAbsolutePath(filePath), content, new UTF8Encoding(false));
-//        return filePath;
-//    }
-
-//    private string CreateModelFile(string sanitizedFeatureName)
-//    {
-//        EnsureDirectoryExists(modelDirectory);
-
-//        var className = $"{sanitizedFeatureName}Model";
-//        var filePath = Path.Combine(modelDirectory, $"{className}.cs");
-//        EnsureFileNotExists(filePath);
-
-//        var content = $@"using System;
-//using JFramework;
-//using JFramework.Unity;
-
-//namespace {namespaceName}
-//{{
-//    public class {className} : Model<{dtoType}>
-//    {{
-//        public {className}(Func<{dtoType}, string> keySelector, EventManager eventManager) : base(keySelector, eventManager)
-//        {{
-//        }}
-//    }}
-//}}
-//";
-
-//        File.WriteAllText(ToAbsolutePath(filePath), content, new UTF8Encoding(false));
-//        return filePath;
-//    }
-
-//    private string[] CreateViewFiles(string sanitizedFeatureName)
-//    {
-//        EnsureDirectoryExists(viewDirectory);
-
-//        var panelClassName = prefabName;
-//        var propertiesClassName = $"{panelClassName}Properties";
-//        var viewClassName = $"{sanitizedFeatureName}View";
-//        var viewDataClassName = $"{viewClassName}Data";
-//        var panelFilePath = Path.Combine(viewDirectory, $"{panelClassName}.cs");
-//        var viewFilePath = Path.Combine(viewDirectory, $"{viewClassName}.cs");
-
-//        EnsureFileNotExists(panelFilePath);
-//        EnsureFileNotExists(viewFilePath);
-
-//        var panelContent = $@"using deVoid.UIFramework;
-//using JFramework.Unity;
-
-//namespace {namespaceName}
-//{{
-//    public class {panelClassName} : UIPanelBase<{propertiesClassName}>
-//    {{
-//        protected override void OnPanelHide()
-//        {{
-//            base.OnPanelHide();
-//        }}
-
-//        protected override void OnPanelShow()
-//        {{
-//            base.OnPanelShow();
-//        }}
-//    }}
-
-//    public class {propertiesClassName} : PanelProperties
-//    {{
-//    }}
-//}}
-//";
-
-//        var viewDataBlock = generateViewData
-//            ? $@"    public class {viewDataClassName} : ViewData
-//    {{
-//    }}
-
-//"
-//            : string.Empty;
-
-//        var openArgType = generateViewData ? viewDataClassName : "ViewData";
-//        var viewContent = $@"using JFramework.Unity;
-
-//namespace {namespaceName}
-//{{
-//    // [ViewScene({sceneStateType})]
-//{viewDataBlock}    public class {viewClassName} : View
-//    {{
-//        private {panelClassName} panel;
-
-//        public override void Open<TArg>(TArg args)
-//        {{
-//            var data = args as {openArgType};
-//            panel = GetUIManager().ShowPanel(data?.prefabName ?? ""{panelClassName}"", new {propertiesClassName}()) as {panelClassName};
-//        }}
-
-//        public override void Close()
-//        {{
-//            if (panel == null)
-//                return;
-
-//            GetUIManager().HidePanel(panel.ScreenId);
-//            panel = null;
-//        }}
-
-//        public override void Refresh<TArg>(TArg args)
-//        {{
-//        }}
-//    }}
-//}}
-//";
-
-//        File.WriteAllText(ToAbsolutePath(panelFilePath), panelContent, new UTF8Encoding(false));
-//        File.WriteAllText(ToAbsolutePath(viewFilePath), viewContent, new UTF8Encoding(false));
-
-//        return new[] { panelFilePath, viewFilePath };
-//    }
-
-//    private static string SanitizeIdentifier(string rawValue)
-//    {
-//        if (string.IsNullOrWhiteSpace(rawValue))
-//            return string.Empty;
-
-//        var trimmed = rawValue.Trim();
-//        var builder = new StringBuilder(trimmed.Length);
-//        for (var index = 0; index < trimmed.Length; index++)
-//        {
-//            var current = trimmed[index];
-//            if (index == 0)
-//            {
-//                if (char.IsLetter(current) || current == '_')
-//                    builder.Append(current);
-//                continue;
-//            }
-
-//            if (char.IsLetterOrDigit(current) || current == '_')
-//                builder.Append(current);
-//        }
-
-//        return builder.ToString();
-//    }
-
-//    private static void EnsureDirectoryExists(string assetRelativePath)
-//    {
-//        var fullPath = ToAbsolutePath(assetRelativePath);
-//        if (!Directory.Exists(fullPath))
-//            Directory.CreateDirectory(fullPath);
-//    }
-
-//    private static void EnsureFileNotExists(string assetRelativePath)
-//    {
-//        if (File.Exists(ToAbsolutePath(assetRelativePath)))
-//            throw new IOException($"文件已存在：{assetRelativePath}");
-//    }
-
-//    private static string ToAssetRelativePath(string fullPath)
-//    {
-//        var normalizedAssetsPath = Application.dataPath.Replace("\\", "/");
-//        var normalizedFullPath = fullPath.Replace("\\", "/");
-//        if (!normalizedFullPath.StartsWith(normalizedAssetsPath, StringComparison.OrdinalIgnoreCase))
-//            return normalizedFullPath;
-
-//        return "Assets" + normalizedFullPath.Substring(normalizedAssetsPath.Length);
-//    }
-
-//    private static string ToAbsolutePath(string assetRelativePath)
-//    {
-//        if (Path.IsPathRooted(assetRelativePath))
-//            return assetRelativePath;
-
-//        var projectRoot = Application.dataPath.Substring(0, Application.dataPath.Length - "Assets".Length);
-//        return Path.GetFullPath(Path.Combine(projectRoot, assetRelativePath));
-//    }
-//}

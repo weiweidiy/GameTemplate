@@ -6,7 +6,7 @@ using JFramework.Game;
 using JFramework.Unity;
 using UnityEngine;
 
-namespace Game.MyModule
+namespace Game
 {
     public sealed class SceneLoginState : BaseGameSceneState
     {

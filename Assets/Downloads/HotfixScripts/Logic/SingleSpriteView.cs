@@ -6,28 +6,28 @@ namespace Game
 {
 
 
-    public class BackgroundViewData : SingleGameObjectViewData
+    public class SingleSpriteViewData : SingleGameObjectViewData
     {
         //public Transform parent; //父物体
         public Sprite sp;
     }
 
-    public class BackgroundView : SingleGameObjectView
+    public abstract class SingleSpriteView : SingleGameObjectView
     {
         //GameObject goBackground;
 
         public override void Open<TArg>(TArg args)
         {
-            //var prefabName = (args as BackgroundViewData)?.prefabName;
-            //var parent = (args as BackgroundViewData)?.parent;
+            //var prefabName = (args as SingleSpriteViewData)?.prefabName;
+            //var parent = (args as SingleSpriteViewData)?.parent;
             //var goManager = GetGameObjectManager();
             //goBackground = goManager.Rent(prefabName, parent);
-            //goBackground.GetComponent<Background>().SetBackground((args as BackgroundViewData)?.sp);
+            //goBackground.GetComponent<SingleSpriteComponent>().SetSrprite((args as SingleSpriteViewData)?.sp);
 
             base.Open<TArg>(args);
 
-            var sp = (args as BackgroundViewData)?.sp;
-            go.GetComponent<Background>().SetBackground(sp);
+            var sp = (args as SingleSpriteViewData)?.sp;
+            go.GetComponent<SingleSpriteComponent>().SetSrprite(sp);
         }
 
         //public override void Close()
