@@ -9,8 +9,6 @@ namespace Game
         public Dictionary<int, Type> GetTypes()
         {
             var tables = new Dictionary<int, Type>();
-            tables.Add((int)ProtocolType.BuildingUpdateNtf, typeof(BuildingUpdateNtf));
-            tables.Add((int)ProtocolType.CurrencyUpdateNtf, typeof(CurrencyUpdateNtf));
             tables.Add((int)ProtocolType.StartFightNtf, typeof(StartFightNtf));
             return tables;
         }

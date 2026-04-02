@@ -2,7 +2,6 @@ using Adic;
 using Adic.Container;
 using Cysharp.Threading.Tasks;
 using Game.Main;
-using Game.MyModule;
 using JFramework;
 using JFramework.Unity;
 using System.Linq;
