@@ -4,7 +4,7 @@ using UnityEngine;
 namespace Game.MyModule
 {
     [DisallowMultipleComponent]
-    public sealed class MyModuleEntry : MonoBehaviour
+    public sealed class GameEntry : MonoBehaviour
     {
         private IJApp app;
 
